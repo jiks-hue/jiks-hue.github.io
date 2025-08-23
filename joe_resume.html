@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jyothis Das - Director AI/ML Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .resume-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 50%;
+            height: 200%;
+            background: rgba(255,255,255,0.05);
+            transform: rotate(35deg);
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .header .title {
+            font-size: 1.4em;
+            font-weight: 300;
+            margin-bottom: 25px;
+            color: #ecf0f1;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            font-size: 0.95em;
+        }
+        
+        .contact-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .contact-info svg {
+            width: 16px;
+            height: 16px;
+            fill: #ecf0f1;
+        }
+        
+        /* Main Content */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 2.5fr;
+            gap: 0;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: #f8f9fa;
+            padding: 30px 25px;
+            border-right: 1px solid #e0e0e0;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 35px;
+        }
+        
+        .sidebar-section h2 {
+            color: #2c3e50;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .sidebar-section ul {
+            list-style: none;
+        }
+        
+        .sidebar-section li {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            color: #555;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .sidebar-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #3498db;
+        }
+        
+        /* Main Section */
+        .main {
+            padding: 30px 35px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .summary {
+            font-size: 1.05em;
+            color: #444;
+            line-height: 1.7;
+            text-align: justify;
+        }
+        
+        .highlights {
+            margin-top: 20px;
+        }
+        
+        .highlights {
+            list-style: none;
+        }
+        
+        .highlights li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        .highlights li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        /* Experience Section */
+        .experience-item {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .experience-item:last-child {
+            border-bottom: none;
+        }
+        
+        .experience-header {
+            margin-bottom: 15px;
+        }
+        
+        .company-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .role-title {
+            color: #3498db;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .date-range {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
+        .experience-bullets {
+            list-style: none;
+            margin-top: 12px;
+        }
+        
+        .experience-bullets li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        .experience-bullets li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        /* Keywords Highlighting */
+        .keyword {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .metric {
+            font-weight: 600;
+            color: #27ae60;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .resume-container {
+                box-shadow: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Jyothis Das</h1>
+            <div class="title">Director - Generative AI/ML</div>
+            <div class="contact-info">
+                <span>
+                    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    +91 8600515359
+                </span>
+                <span>
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    joe.dasms@gmail.com
+                </span>
+                <span>
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    Pune, India
+                </span>
+                <span>
+                    <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                    linkedin.com/in/joedas
+                </span>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h2>Core Competencies</h2>
+                    <ul>
+                        <li>AI/ML Strategy & Roadmap Development</li>
+                        <li>Generative AI & LLM Adoption (Vertex AI, Gemini, Agentic AI)</li>
+                        <li>Cloud-Native AI Platforms (BigQuery, Dataflow, Pub/Sub)</li>
+                        <li>Enterprise Search & Workflow Automation</li>
+                        <li>Hyper-Personalization & Data Monetization</li>
+                        <li>Cross-Functional Leadership & Talent Development</li>
+                        <li>Client Engagement & Thought Leadership</li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h2>Education</h2>
+                    <ul>
+                        <li><strong>PGDBA</strong> (Business Analytics)<br>2015 - 2016</li>
+                        <li><strong>B.Tech</strong><br>2004 - 2008</li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h2>Certifications</h2>
+                    <ul>
+                        <li>Google Cloud Generative AI L400 (Leadership Track)</li>
+                        <li>AWS Technical Essentials</li>
+                        <li>Microsoft Certified Data Scientist</li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h2>Publications</h2>
+                    <ul>
+                        <li>Transforming Fintech with Generative AI: Case Studies and Lessons Learned</li>
+                        <li>The Impact of AI/ML Leadership in Shaping the Future of Technology</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main">
+                <div class="section">
+                    <h2>Professional Summary</h2>
+                    <p class="summary">
+                        Seasoned <span class="keyword">Director – AI/ML & Generative AI</span> with <span class="metric">16 years</span> of experience driving enterprise AI transformation across fintech, healthcare, automotive, and retail. Proven expertise in shaping <span class="keyword">AI/ML strategy</span>, building high-performing teams, and leading adoption of <span class="keyword">Generative AI, LLMs, and cloud-native AI platforms</span>. Skilled at aligning AI programs with business objectives, guiding organizations from POC to enterprise-scale deployment, and influencing executive stakeholders to drive measurable business impact. Recognized as a <span class="keyword">GenAI Strategy Leader</span> bridging technology and business strategy to accelerate AI adoption.
+                    </p>
+                </div>
+                
+                <div class="section">
+                    <h2>Key Leadership Highlights</h2>
+                    <ul class="highlights">
+                        <li>Directed AI/ML strategy across fintech, healthcare, automotive, and retail, accelerating AI deployment by <span class="metric">30–40%</span>.</li>
+                        <li>Championed Generative AI and LLM adoption (Vertex AI, Gemini), delivering enterprise solutions impacting <span class="metric">5M+ records</span> and enabling real-time insights.</li>
+                        <li>Built and mentored teams of <span class="metric">15+ AI/ML specialists</span>, improving organizational AI maturity and delivery velocity.</li>
+                        <li>Partnered with executives to align AI roadmaps with business goals, achieving outcomes like <span class="metric">20% improved retention</span> and reduced stock-outs.</li>
+                        <li>Delivered production-ready AI platforms for fraud detection, demand forecasting, anomaly detection, and route optimization, improving efficiency by <span class="metric">25%+</span>.</li>
+                        <li>Recognized as a GenAI Strategy Leader, shaping industry narratives and accelerating adoption through reusable accelerators and frameworks.</li>
+                    </ul>
+                </div>
+                
+                <div class="section">
+                    <h2>Professional Experience</h2>
+                    
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="company-name">Onix</div>
+                            <div class="role-title">Director, AI/ML & Generative AI</div>
+                            <div class="date-range">April 2024 – Present</div>
+                        </div>
+                        <ul class="experience-bullets">
+                            <li>Defined and executed <span class="keyword">AI/ML strategy</span> in partnership with C-level executives, ensuring alignment with transformation goals across fintech, retail, healthcare, and automotive.</li>
+                            <li>Led enterprise adoption of <span class="keyword">Generative AI</span> (Vertex AI, Gemini, Agentic AI), deploying multimodal assistants, enterprise search, and NL2SQL query generation for analytics automation.</li>
+                            <li>Delivered mission-critical AI platforms including real-time anomaly detection, intelligent route optimization, and enterprise image generation — enhancing operational efficiency by <span class="metric">25%+</span>.</li>
+                            <li>Accelerated adoption cycle by building reusable accelerators and demos (e.g., Google ADK agents, Vertex AI pipelines), reducing POC-to-production timelines by <span class="metric">40%</span>.</li>
+                            <li>Expanded leadership capacity: built, mentored, and scaled cross-functional teams (data scientists, ML engineers, architects) while embedding GenAI skills development into workforce training.</li>
+                            <li>Shaped AI governance by advising executives on AI ethics, compliance, and monetization strategies, ensuring scalable and responsible adoption.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="company-name">PayNearby</div>
+                            <div class="role-title">Head of AI & ML</div>
+                            <div class="date-range">September 2021 – April 2024</div>
+                        </div>
+                        <ul class="experience-bullets">
+                            <li>Formulated and drove <span class="keyword">AI/ML vision</span> for a leading fintech, aligning initiatives with business goals in customer experience, fraud management, and financial inclusion.</li>
+                            <li>Built and scaled cross-disciplinary teams across Data Analytics, Engineering, and AI/ML, establishing governance frameworks that improved delivery speed and reduced project overruns by <span class="metric">20%</span>.</li>
+                            <li>Launched a <span class="keyword">Virtual AI Agent</span> that transformed customer support, cutting resolution time by <span class="metric">35%</span> and boosting satisfaction scores.</li>
+                            <li>Implemented <span class="keyword">DocAI-based KYC automation</span>, reducing onboarding time by <span class="metric">40%</span> and enhancing compliance accuracy.</li>
+                            <li>Directed AI-first fraud detection and churn prevention programs, leveraging synthetic data and predictive modeling to cut fraud-related losses and improve retention.</li>
+                            <li>Collaborated with product and technology leaders to integrate AI into the core business platform, enabling data-driven decision-making and increasing operational efficiency.</li>
+                            <li>Recognized as a strategic partner to the leadership team, influencing product roadmaps and positioning AI as a competitive differentiator.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="company-name">DMI Management LLC</div>
+                            <div class="role-title">Principal Data Scientist</div>
+                            <div class="date-range">April 2017 – September 2021</div>
+                        </div>
+                        <ul class="experience-bullets">
+                            <li>Established and scaled the Data Science practice from the ground up; recruited and mentored a high-performing team of data scientists.</li>
+                            <li>Directed AI/ML projects spanning <span class="keyword">computer vision</span> (fleet inspection), <span class="keyword">NLP</span> (healthcare claims), and retail recommendation engines, enabling new revenue streams and cost optimization.</li>
+                            <li>Partnered with senior business leaders to define AI project roadmaps and ensured delivery of measurable ROI.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="company-name">Earlier Career</div>
+                            <div class="role-title">Progressive Roles in Data Science & Engineering</div>
+                            <div class="date-range">2009 – 2017</div>
+                        </div>
+                        <ul class="experience-bullets">
+                            <li><strong>Capgemini – Lead Data Scientist</strong> (Feb 2015 – Apr 2017): Delivered ML solutions in banking including fraud detection, credit risk assessment, and customer segmentation.</li>
+                            <li><strong>IBM – Data Scientist</strong> (Aug 2012 – Jan 2015): Developed telecom analytics, predictive modeling, and retail recommendation engines to drive customer engagement and revenue.</li>
+                            <li><strong>HSBC – Data Analyst</strong> (Feb 2012 – Jul 2012): Designed ETL pipelines and managed enterprise data warehouse for high-quality analytics.</li>
+                            <li><strong>Wipro Technologies – Data Engineer</strong> (Sep 2009 – Feb 2012): Built scalable ETL workflows and data pipelines for major US banking clients.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
