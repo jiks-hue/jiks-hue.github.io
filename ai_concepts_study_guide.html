@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Concepts Study Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --ink-light: #3d3d5c;
+      --ink-muted: #7a7a99;
+      --paper: #fafaf7;
+      --surface: #f2f2ec;
+      --surface2: #e8e8df;
+      --accent: #e63946;
+      --accent2: #2a6dd9;
+      --accent3: #0d9e6e;
+      --accent4: #d4860a;
+      --accent-soft: rgba(230,57,70,0.08);
+      --accent2-soft: rgba(42,109,217,0.08);
+      --accent3-soft: rgba(13,158,110,0.08);
+      --accent4-soft: rgba(212,134,10,0.08);
+      --border: rgba(26,26,46,0.12);
+      --border-strong: rgba(26,26,46,0.25);
+      --radius: 10px;
+      --shadow: 0 4px 24px rgba(26,26,46,0.10);
+      --shadow-lg: 0 12px 48px rgba(26,26,46,0.16);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* Progress bar */
+    #progress-bar {
+      position: fixed; top:0; left:0; height:3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0%; z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* Header */
+    header {
+      background: var(--ink);
+      color: white;
+      padding: 48px 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content:'';
+      position:absolute; top:-60px; right:-60px;
+      width:300px; height:300px;
+      border-radius:50%;
+      background: radial-gradient(circle, rgba(230,57,70,0.25) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    header::after {
+      content:'';
+      position:absolute; bottom:-80px; left:30%;
+      width:200px; height:200px;
+      border-radius:50%;
+      background: radial-gradient(circle, rgba(42,109,217,0.20) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .header-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 14px;
+    }
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    header h1 em { color: var(--accent); font-style: italic; }
+    .header-sub {
+      color: rgba(255,255,255,0.6);
+      font-size: 15px; font-weight: 400;
+      max-width: 600px;
+    }
+    .header-meta {
+      display: flex; gap: 20px; margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .meta-pill {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 12px; font-family: 'DM Mono', monospace;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Search */
+    .search-container {
+      padding: 20px 40px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .search-inner {
+      position: relative; max-width: 600px;
+    }
+    .search-icon {
+      position:absolute; left:16px; top:50%; transform:translateY(-50%);
+      color: var(--ink-muted); font-size:16px; pointer-events:none;
+    }
+    .search-box {
+      width: 100%;
+      padding: 12px 20px 12px 44px;
+      font-size: 15px;
+      font-family: 'Syne', sans-serif;
+      border: 1.5px solid var(--border-strong);
+      border-radius: 30px;
+      background: white;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box:focus {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 3px rgba(42,109,217,0.12);
+    }
+    .search-shortcut {
+      position:absolute; right:16px; top:50%; transform:translateY(-50%);
+      font-family: 'DM Mono', monospace; font-size:11px;
+      color: var(--ink-muted);
+      background: var(--surface2); padding:2px 8px; border-radius:4px;
+      border: 1px solid var(--border);
+    }
+    .search-results {
+      position:absolute; top:calc(100% + 8px); left:0; right:0;
+      background:white; border-radius:var(--radius);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      max-height:380px; overflow-y:auto;
+      z-index:1000; display:none;
+    }
+    .search-results.show { display:block; }
+    .search-result-item {
+      padding:14px 20px; border-bottom:1px solid var(--border);
+      cursor:pointer; transition:background 0.15s;
+    }
+    .search-result-item:hover { background:var(--surface); }
+    .search-result-item:last-child { border-bottom:none; }
+    .search-result-title { font-weight:600; font-size:14px; color:var(--ink); margin-bottom:4px; }
+    .search-result-tab {
+      display:inline-block; font-size:11px;
+      font-family:'DM Mono',monospace;
+      padding:2px 8px; border-radius:4px;
+      background:var(--surface2); color:var(--ink-muted);
+    }
+    .search-no-results { padding:20px; text-align:center; color:var(--ink-muted); font-size:14px; }
+
+    /* Tabs */
+    .tab-nav {
+      display:flex; background:white;
+      padding:0 40px;
+      border-bottom:2px solid var(--border);
+      overflow-x:auto; gap:0;
+    }
+    .tab-button {
+      padding:16px 22px;
+      background:transparent; border:none;
+      cursor:pointer; font-size:13px; font-weight:600;
+      font-family:'Syne',sans-serif;
+      color:var(--ink-muted);
+      transition:all 0.2s;
+      border-bottom:2.5px solid transparent;
+      margin-bottom:-2px;
+      white-space:nowrap;
+      display:flex; align-items:center; gap:8px;
+    }
+    .tab-button:hover { color:var(--ink); background:var(--surface); }
+    .tab-button.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .tab-icon { font-size:15px; }
+
+    /* Content */
+    .content-area { padding:40px; max-width:1100px; margin:0 auto; }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    /* Section titles */
+    .section-title {
+      font-family:'DM Serif Display',serif;
+      font-size:1.6rem; color:var(--ink);
+      margin-bottom:8px;
+    }
+    .section-subtitle {
+      color:var(--ink-muted); font-size:14px;
+      margin-bottom:32px; line-height:1.6;
+    }
+
+    /* Cards */
+    .card {
+      background:white; border:1px solid var(--border);
+      border-radius:var(--radius);
+      margin-bottom:28px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .card-header {
+      padding:20px 24px 16px;
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:flex-start; gap:14px;
+    }
+    .card-number {
+      font-family:'DM Mono',monospace; font-size:11px;
+      color:white; background:var(--ink);
+      padding:3px 8px; border-radius:4px;
+      flex-shrink:0; margin-top:3px;
+    }
+    .card-title { font-size:1.05rem; font-weight:700; color:var(--ink); margin-bottom:4px; }
+    .card-desc { font-size:13px; color:var(--ink-muted); line-height:1.5; }
+    .card-body { padding:24px; }
+
+    /* Key insight callout */
+    .insight {
+      background:var(--accent-soft);
+      border-left:3px solid var(--accent);
+      border-radius:0 var(--radius) var(--radius) 0;
+      padding:14px 18px; margin:16px 0;
+      font-size:14px; line-height:1.6;
+    }
+    .insight strong { color:var(--accent); }
+    .insight-blue {
+      background:var(--accent2-soft);
+      border-left-color:var(--accent2);
+    }
+    .insight-blue strong { color:var(--accent2); }
+    .insight-green {
+      background:var(--accent3-soft);
+      border-left-color:var(--accent3);
+    }
+    .insight-green strong { color:var(--accent3); }
+    .insight-amber {
+      background:var(--accent4-soft);
+      border-left-color:var(--accent4);
+    }
+    .insight-amber strong { color:var(--accent4); }
+
+    /* Formula box */
+    .formula-box {
+      background:var(--ink); color:white;
+      border-radius:var(--radius); padding:18px 24px;
+      font-family:'DM Mono',monospace;
+      font-size:14px; line-height:1.8;
+      margin:16px 0; overflow-x:auto;
+    }
+    .formula-box .label {
+      color:rgba(255,255,255,0.45); font-size:11px;
+      text-transform:uppercase; letter-spacing:2px;
+      display:block; margin-bottom:10px;
+    }
+    .formula-box .hl { color:#f9c74f; }
+    .formula-box .hl2 { color:#90e0ef; }
+    .formula-box .hl3 { color:#95d5b2; }
+    .formula-box .hl4 { color:#ffb3c6; }
+
+    /* Collapsible math */
+    .collapsible-trigger {
+      display:flex; align-items:center; gap:10px;
+      cursor:pointer; padding:12px 16px;
+      background:var(--surface); border-radius:var(--radius);
+      border:1px solid var(--border);
+      font-size:13px; font-weight:600; color:var(--ink-light);
+      margin:16px 0; user-select:none;
+      transition:background 0.15s;
+    }
+    .collapsible-trigger:hover { background:var(--surface2); }
+    .collapsible-trigger .arrow {
+      margin-left:auto; transition:transform 0.25s;
+      font-size:12px; color:var(--ink-muted);
+    }
+    .collapsible-trigger.open .arrow { transform:rotate(180deg); }
+    .collapsible-body {
+      display:none; padding:4px 0 4px;
+    }
+    .collapsible-body.open { display:block; }
+
+    /* Example thread badge */
+    .example-thread {
+      display:inline-flex; align-items:center; gap:6px;
+      background:linear-gradient(90deg,var(--accent4-soft),transparent);
+      border:1px solid rgba(212,134,10,0.25);
+      padding:4px 12px; border-radius:20px;
+      font-size:11px; font-family:'DM Mono',monospace;
+      color:var(--accent4); margin-bottom:14px;
+    }
+    .example-thread::before { content:'◆'; font-size:8px; }
+
+    /* Comparison table */
+    .compare-table {
+      width:100%; border-collapse:collapse;
+      font-size:14px; margin:16px 0;
+    }
+    .compare-table th {
+      background:var(--ink); color:white;
+      padding:12px 16px; text-align:left;
+      font-size:12px; font-weight:600;
+      font-family:'DM Mono',monospace;
+      letter-spacing:0.5px;
+    }
+    .compare-table th:first-child { border-radius:var(--radius) 0 0 0; }
+    .compare-table th:last-child { border-radius:0 var(--radius) 0 0; }
+    .compare-table td {
+      padding:12px 16px; border-bottom:1px solid var(--border);
+      line-height:1.5; vertical-align:top;
+    }
+    .compare-table tr:last-child td { border-bottom:none; }
+    .compare-table tr:nth-child(even) td { background:var(--surface); }
+    .compare-table .tag {
+      display:inline-block; padding:2px 8px; border-radius:4px;
+      font-size:11px; font-family:'DM Mono',monospace;
+      font-weight:500;
+    }
+    .tag-red { background:var(--accent-soft); color:var(--accent); }
+    .tag-blue { background:var(--accent2-soft); color:var(--accent2); }
+    .tag-green { background:var(--accent3-soft); color:var(--accent3); }
+    .tag-amber { background:var(--accent4-soft); color:var(--accent4); }
+
+    /* Step list */
+    .step-list { list-style:none; margin:16px 0; }
+    .step-list li {
+      display:flex; gap:14px; margin-bottom:14px;
+      align-items:flex-start; font-size:14px; line-height:1.6;
+    }
+    .step-num {
+      flex-shrink:0; width:26px; height:26px;
+      border-radius:50%; background:var(--ink);
+      color:white; display:flex; align-items:center;
+      justify-content:center; font-size:11px;
+      font-family:'DM Mono',monospace; font-weight:500;
+      margin-top:1px;
+    }
+
+    /* Code block */
+    .code-block {
+      background:#16213e; color:#e2e8f0;
+      border-radius:var(--radius); padding:18px 22px;
+      font-family:'DM Mono',monospace; font-size:13px;
+      line-height:1.75; overflow-x:auto; margin:14px 0;
+    }
+    .code-block .c { color:#718096; }
+    .code-block .s { color:#f9c74f; }
+    .code-block .n { color:#90e0ef; }
+    .code-block .k { color:#ffb3c6; }
+
+    /* Two-column layout */
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:16px 0; }
+    @media(max-width:700px) { .two-col { grid-template-columns:1fr; } }
+    .col-card {
+      background:var(--surface); border-radius:var(--radius);
+      padding:18px; border:1px solid var(--border);
+    }
+    .col-card h4 { font-size:13px; font-weight:700; margin-bottom:10px; color:var(--ink); }
+    .col-card p, .col-card li { font-size:13px; color:var(--ink-light); line-height:1.6; }
+    .col-card ul { padding-left:16px; }
+
+    /* Mini vector display */
+    .vector-display {
+      display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;
+    }
+    .vector-chip {
+      background:var(--ink); color:white;
+      padding:6px 14px; border-radius:6px;
+      font-family:'DM Mono',monospace; font-size:13px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .vector-chip .word { color:rgba(255,255,255,0.5); font-size:11px; }
+    .vector-chip .arrow-icon { color:var(--accent); }
+
+    /* Quick ref grid */
+    .ref-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; margin:20px 0; }
+    .ref-card {
+      background:white; border:1px solid var(--border);
+      border-radius:var(--radius); padding:20px;
+      box-shadow:var(--shadow);
+    }
+    .ref-card h4 {
+      font-size:13px; font-weight:700;
+      text-transform:uppercase; letter-spacing:1px;
+      color:var(--ink-muted); margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .ref-card h4::before {
+      content:''; display:inline-block;
+      width:3px; height:14px; background:var(--accent);
+      border-radius:2px;
+    }
+
+    /* Architecture layer diagram (CSS) */
+    .arch-layers { margin:20px 0; }
+    .arch-layer {
+      padding:14px 20px; margin-bottom:3px;
+      border-radius:6px; font-size:13px;
+      display:flex; align-items:center; justify-content:space-between;
+      font-family:'DM Mono',monospace;
+    }
+    .arch-layer .layer-name { font-weight:500; }
+    .arch-layer .layer-note { color:rgba(255,255,255,0.55); font-size:11px; }
+
+    /* Scrollspy sidebar not needed — using tab nav */
+
+    /* Divider */
+    .divider {
+      border:none; border-top:1px solid var(--border);
+      margin:28px 0;
+    }
+
+    /* Tag list */
+    .tag-list { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .tag-item {
+      background:var(--surface2); color:var(--ink-light);
+      padding:4px 12px; border-radius:20px;
+      font-size:12px; font-family:'DM Mono',monospace;
+    }
+
+    /* Anchor scroll offset */
+    [id] { scroll-margin-top: 80px; }
+
+    /* Highlight flash */
+    .flash-highlight {
+      animation: flash 2s ease-out forwards;
+    }
+    @keyframes flash {
+      0%  { background-color: #fff3cd; }
+      100%{ background-color: transparent; }
+    }
+
+    /* Footer */
+    footer {
+      text-align:center; padding:32px 40px;
+      color:var(--ink-muted); font-size:13px;
+      border-top:1px solid var(--border);
+      background:var(--surface);
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-label">Study Guide · AI &amp; ML Foundations</div>
+  <h1>Vectors, Embeddings &amp;<br><em>Transformer Architecture</em></h1>
+  <p class="header-sub">A complete reference built from our conversation — covering dot products, cosine similarity, BERT, self-attention, and modern LLMs.</p>
+  <div class="header-meta">
+    <span class="meta-pill">24 Topics</span>
+    <span class="meta-pill">5 Sections</span>
+    <span class="meta-pill">Apple &amp; Fruit examples throughout</span>
+    <span class="meta-pill">Expandable math walkthroughs</span>
+  </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-container">
+  <div class="search-inner">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="searchBox" class="search-box" placeholder="Search topics, concepts, formulas…" autocomplete="off">
+    <span class="search-shortcut">⌘F</span>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-button active" onclick="openTab(event,'tab-foundations')">
+    <span class="tab-icon">◎</span> Foundations
+  </button>
+  <button class="tab-button" onclick="openTab(event,'tab-embeddings')">
+    <span class="tab-icon">◈</span> Embeddings
+  </button>
+  <button class="tab-button" onclick="openTab(event,'tab-transformer')">
+    <span class="tab-icon">◇</span> Transformer
+  </button>
+  <button class="tab-button" onclick="openTab(event,'tab-architecture')">
+    <span class="tab-icon">◉</span> Architecture
+  </button>
+  <button class="tab-button" onclick="openTab(event,'tab-reference')">
+    <span class="tab-icon">▦</span> Quick Reference
+  </button>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1: FOUNDATIONS -->
+<!-- ============================================================ -->
+<div id="tab-foundations" class="tab-content active">
+<div class="content-area">
+  <h2 class="section-title">Foundations</h2>
+  <p class="section-subtitle">Dot product, cosine similarity, vector magnitude, and when to use each in AI systems.</p>
+
+  <!-- Card 1 -->
+  <div class="card" id="dot-product-basics">
+    <div class="card-header">
+      <span class="card-number">01</span>
+      <div>
+        <div class="card-title">Dot Product — How it determines similarity</div>
+        <div class="card-desc">The mathematical operation that powers attention, recommendation, and search.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="example-thread">Apple &amp; Fruit example</div>
+      <p style="font-size:14px;line-height:1.7;margin-bottom:14px;">The dot product of two vectors is computed by multiplying corresponding components and summing the results. It gives a higher scalar value when vectors point in similar directions and have larger magnitudes.</p>
+
+      <div class="formula-box">
+        <span class="label">Formula</span>
+        <span class="hl">A · B</span> = <span class="hl2">a₁b₁ + a₂b₂ + … + aₙbₙ</span>
+        <br><br>
+        <span class="label">Geometric meaning</span>
+        <span class="hl">A · B</span> = <span class="hl3">|A| × |B| × cos(θ)</span>
+      </div>
+
+      <div class="insight">
+        <strong>Key insight:</strong> The dot product captures both direction alignment (via cos θ) and magnitude (via |A|·|B|). Cosine similarity strips the magnitude and keeps only direction.
+      </div>
+
+      <div class="collapsible-trigger" onclick="toggleCollapse(this)">
+        <span>◆ Full calculation walkthrough — Apple vs Fruit</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="formula-box">
+          <span class="label">Vectors (2D toy example)</span>
+          Apple  → <span class="hl">[0.9, 0.1]</span>  <span class="c">(food-related, low living-thing)</span>
+          Fruit  → <span class="hl2">[0.8, 0.2]</span>  <span class="c">(food-related, low living-thing)</span>
+          Animal → <span class="hl4">[0.1, 0.9]</span>  <span class="c">(low food, high living-thing)</span>
+          <br>
+          <span class="label">Apple · Fruit</span>
+          = (0.9 × 0.8) + (0.1 × 0.2)
+          = 0.72 + 0.02 = <span class="hl3">0.74</span>
+          <br>
+          <span class="label">Apple · Animal</span>
+          = (0.9 × 0.1) + (0.1 × 0.9)
+          = 0.09 + 0.27 = <span class="hl4">0.36</span>
+        </div>
+        <div class="insight insight-green"><strong>Result:</strong> Apple is more similar to Fruit (0.74) than Animal (0.36). The dot product correctly captures this — but only when magnitudes are comparable.</div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <p style="font-size:14px;margin-bottom:10px;font-weight:600;">Interpretation of dot product values:</p>
+        <table class="compare-table">
+          <thead><tr><th>Value</th><th>Meaning</th><th>Angle (θ)</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-green">High positive</span></td><td>Vectors point in same direction — high similarity</td><td>Small (near 0°)</td></tr>
+            <tr><td><span class="tag tag-amber">Zero</span></td><td>Vectors are perpendicular — unrelated</td><td>90°</td></tr>
+            <tr><td><span class="tag tag-red">Negative</span></td><td>Vectors point in opposite directions — dissimilar</td><td>Near 180°</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="card" id="cosine-similarity">
+    <div class="card-header">
+      <span class="card-number">02</span>
+      <div>
+        <div class="card-title">Cosine Similarity — Why we use cos(θ) not θ</div>
+        <div class="card-desc">The normalised dot product that removes magnitude bias.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="example-thread">Apple &amp; Fruit example</div>
+
+      <div class="formula-box">
+        <span class="label">Cosine Similarity Formula</span>
+        cos_sim(A, B) = <span class="hl">A · B</span> / <span class="hl2">(|A| × |B|)</span>
+        <br><br>
+        <span class="label">Range</span>
+        Always between <span class="hl3">-1 and +1</span>  (or 0 to 1 for word vectors)
+      </div>
+
+      <p style="font-size:14px;line-height:1.7;margin-bottom:14px;">We use <strong>cos(θ)</strong>, not the angle θ itself, for three reasons:</p>
+      <ul class="step-list">
+        <li><span class="step-num">1</span><span><strong>Standard range:</strong> cos(θ) stays between -1 and +1. Higher always means more similar — intuitive for data science.</span></li>
+        <li><span class="step-num">2</span><span><strong>Inverse relationship fixed:</strong> With θ, a smaller angle (0°) means high similarity, which is counter-intuitive. cos(θ) flips this: 1 = identical direction, 0 = unrelated.</span></li>
+        <li><span class="step-num">3</span><span><strong>Computational efficiency:</strong> Computing the cosine via dot product and magnitudes is faster than computing the actual angle using arccos.</span></li>
+      </ul>
+
+      <div class="collapsible-trigger" onclick="toggleCollapse(this)">
+        <span>◆ Full calculation — Apple vs Fruit cosine similarity</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="formula-box">
+          <span class="label">Step 1: Magnitudes</span>
+          |Apple| = √(0.9² + 0.1²) = √(0.81 + 0.01) = √0.82 ≈ <span class="hl">0.906</span>
+          |Fruit| = √(0.8² + 0.2²) = √(0.64 + 0.04) = √0.68 ≈ <span class="hl2">0.825</span>
+          <br>
+          <span class="label">Step 2: Cosine similarity</span>
+          = 0.74 / (0.906 × 0.825)
+          = 0.74 / 0.748 ≈ <span class="hl3">0.991</span>
+        </div>
+        <div class="insight insight-green"><strong>0.991</strong> — Apple and Fruit are nearly identical in direction, even though their magnitudes differ slightly. This is what cosine similarity captures that raw dot product misses.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="card" id="magnitude-problem">
+    <div class="card-header">
+      <span class="card-number">03</span>
+      <div>
+        <div class="card-title">The Magnitude Problem — Why dot product can mislead</div>
+        <div class="card-desc">When large magnitude vectors beat semantically similar ones.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="example-thread">Animal [0.9, 0.9] problem</div>
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">If Animal had vectors [0.9, 0.9] instead of [0.1, 0.9], the dot product would give it a higher score than Fruit, even though it is less semantically similar to Apple:</p>
+
+      <div class="formula-box">
+        <span class="label">Dot Product (raw)</span>
+        Apple · Fruit [0.8,0.2]   = <span class="hl3">0.74</span>  ✓
+        Apple · Animal [0.9,0.9]  = <span class="hl4">1.08</span>  ✗ (Animal wins due to large magnitude)
+        <br>
+        <span class="label">Cosine Similarity (normalised)</span>
+        Apple vs Fruit   ≈ <span class="hl3">0.990</span>  ✓
+        Apple vs Animal  ≈ <span class="hl4">0.894</span>  ✓ (Fruit correctly wins)
+      </div>
+
+      <div class="insight insight-amber"><strong>Key insight:</strong> Cosine similarity normalises out magnitude. Use it whenever you care only about semantic direction, not strength. Use raw dot product when magnitude is meaningful (e.g., Transformer attention, recommendation systems).</div>
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="card" id="dot-vs-cosine-usecases">
+    <div class="card-header">
+      <span class="card-number">04</span>
+      <div>
+        <div class="card-title">Dot Product vs Cosine — When to use which in AI</div>
+        <div class="card-desc">Production use-case mapping for both similarity metrics.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="compare-table">
+        <thead>
+          <tr><th>Metric</th><th>AI Use Case</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-red">Dot Product</span></td>
+            <td>Transformer self-attention (LLMs)</td>
+            <td>Speed: no square root or division. Magnitude represents "importance" of a token.</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-red">Dot Product</span></td>
+            <td>Recommendation systems (Spotify, Netflix)</td>
+            <td>Users who interact more (higher magnitude) should have stronger impact.</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-blue">Cosine Similarity</span></td>
+            <td>Document search &amp; RAG retrieval</td>
+            <td>Prevents long documents from outscoring short ones just because of word count.</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-blue">Cosine Similarity</span></td>
+            <td>Image retrieval</td>
+            <td>Cares about content direction (style/subject), not brightness or contrast magnitude.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Card 5 -->
+  <div class="card" id="dot-product-range">
+    <div class="card-header">
+      <span class="card-number">05</span>
+      <div>
+        <div class="card-title">Dot Product Has No Fixed Range — How similarity is determined</div>
+        <div class="card-desc">Relative ranking, learned thresholds, and Softmax normalisation.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">Unlike cosine similarity, the dot product score can be 10, 500, or -2000 depending on vector magnitudes. Three approaches handle this:</p>
+      <ul class="step-list">
+        <li><span class="step-num">1</span><span><strong>Relative ranking (search):</strong> Don't ask "is 50 good?" — ask "which vector scores highest?" The model returns the top-K results by rank.</span></li>
+        <li><span class="step-num">2</span><span><strong>Learned thresholds:</strong> In specific systems (face recognition, spam filters), engineers find model-specific thresholds through testing. A threshold of 50 for one model would be meaningless for another.</span></li>
+        <li><span class="step-num">3</span><span><strong>Softmax normalisation:</strong> Used in Transformers. Converts raw scores into probabilities: [74, 12, 2] → [0.99, 0.01, 0.00]. Now scores look like percentages.</span></li>
+      </ul>
+      <div class="insight insight-blue"><strong>Summary:</strong> Dot product is used for <em>ranking</em> (find the best match) rather than <em>scoring</em> (decide if a match is good in isolation). It always requires context or normalisation to be interpretable.</div>
+    </div>
+  </div>
+
+  <!-- Card 6 -->
+  <div class="card" id="long-document-bias">
+    <div class="card-header">
+      <span class="card-number">06</span>
+      <div>
+        <div class="card-title">Long Document Bias — How cosine fixes the length problem</div>
+        <div class="card-desc">Why dot product favours long documents over relevant short ones.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">The document vector is built by summing or averaging word vectors. A document mentioning "Apple" 50 times accumulates 50× the value:</p>
+
+      <div class="formula-box">
+        <span class="label">Document vector accumulation</span>
+        Apple vector: <span class="hl">[0.9, 0.1]</span>
+        Doc (1 mention):  <span class="hl2">[0.9, 0.1]</span>   → dot product = 0.82
+        Doc (50 mentions): <span class="hl3">[45.0, 5.0]</span>  → dot product = 41.0
+        <br>
+        <span class="label">The 50× bias</span>
+        50-mention doc scores ~50× higher than 1-mention doc
+        even if the 1-mention doc is perfectly relevant
+      </div>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h4>Dot product says</h4>
+          <p>"This textbook is huge and mentions Apple 50 times → score: 500"</p>
+          <p style="margin-top:8px;color:var(--accent)">Biased toward length.</p>
+        </div>
+        <div class="col-card">
+          <h4>Cosine similarity says</h4>
+          <p>500 / 5,000 (length) = 0.1 (low score).<br>Short doc: 10 / 5 = 2.0 (high score).</p>
+          <p style="margin-top:8px;color:var(--accent3)">Normalised by length.</p>
+        </div>
+      </div>
+      <div class="insight insight-green"><strong>Key insight:</strong> Dot product measures "how much of word X is in this document?" Cosine similarity measures "what percentage of this document is about word X?" In text search, use cosine.</div>
+    </div>
+  </div>
+
+  <!-- Card 7 -->
+  <div class="card" id="query-vs-document">
+    <div class="card-header">
+      <span class="card-number">07</span>
+      <div>
+        <div class="card-title">Query vs Document Vectors — Same dimensions, always</div>
+        <div class="card-desc">How query and document vectors are compared in practice.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="insight insight-blue"><strong>Critical rule:</strong> Both vectors must have the same number of dimensions. A 2D query vector cannot be compared to a 1000D document vector. The embedding model fixes the dimensionality — everything uses the same size.</div>
+      <p style="font-size:14px;line-height:1.7;margin:16px 0;">Documents are compressed into a single fixed-size vector via averaging or [CLS] token. The dot product is always element-wise: position 1 × position 1, position 2 × position 2. Never cross-multiplied.</p>
+
+      <div class="collapsible-trigger" onclick="toggleCollapse(this)">
+        <span>◆ Full example — "red fruit" document averaging to 2D</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="formula-box">
+          <span class="label">Document: "An apple a day keeps the doctor away"</span>
+          "an"     → [0.1, 0.1]
+          "apple"  → [0.9, 0.1]
+          "a"      → [0.1, 0.1]
+          "day"    → [0.2, 0.2]
+          "keeps"  → [0.1, 0.1]
+          "the"    → [0.1, 0.1]
+          "doctor" → [0.5, 0.2]
+          "away"   → [0.1, 0.1]
+          <br>
+          Average → <span class="hl">[0.263, 0.125]</span>
+          <br>
+          <span class="label">Query: "apple" → [0.9, 0.1]</span>
+          Dot product = (0.9 × 0.263) + (0.1 × 0.125)
+                      = 0.237 + 0.013 = <span class="hl3">0.25</span>
+          <br>
+          Cosine similarity ≈ <span class="hl3">0.947</span>  (high directional match)
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 2: EMBEDDINGS -->
+<!-- ============================================================ -->
+<div id="tab-embeddings" class="tab-content">
+<div class="content-area">
+  <h2 class="section-title">Embeddings</h2>
+  <p class="section-subtitle">How words become vectors: context, training, and what the 768 dimensions actually mean.</p>
+
+  <!-- Card 8 -->
+  <div class="card" id="embeddings-meaning">
+    <div class="card-header">
+      <span class="card-number">08</span>
+      <div>
+        <div class="card-title">How Embeddings Capture Meaning</div>
+        <div class="card-desc">Why similar words end up with similar vectors.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">When BERT trains on billions of sentences, it notices that "apple" and "fruit" appear in similar contexts:</p>
+      <div class="formula-box">
+        <span class="s">"I ate an apple"</span>   and   <span class="s">"I ate a fruit"</span>
+        <span class="s">"The apple was sweet"</span> and <span class="s">"The fruit was sweet"</span>
+      </div>
+      <p style="font-size:14px;line-height:1.7;margin:14px 0;">Because they appear in similar contexts, the model pushes their vectors to point in a similar direction. <strong>Context defines meaning, and meaning defines direction.</strong></p>
+
+      <div class="insight insight-amber"><strong>Key insight:</strong> In a 2D space with dimensions D1="food-related-ness" and D2="living-thing-related-ness", Apple [0.9, 0.3] and Fruit [0.8, 0.4] both point toward D1. Animal [0.1, 0.9] points toward D2 — a very different direction.</div>
+    </div>
+  </div>
+
+  <!-- Card 9 -->
+  <div class="card" id="bert-training">
+    <div class="card-header">
+      <span class="card-number">09</span>
+      <div>
+        <div class="card-title">BERT Training — Masked Language Modelling (MLM)</div>
+        <div class="card-desc">How BERT learns by predicting hidden words.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">BERT uses Masked Language Modelling: it hides some words and asks the model to predict them. This is a classification problem — not a vector prediction.</p>
+
+      <div class="formula-box">
+        <span class="label">MLM Training examples</span>
+        Input:  <span class="s">"I ate an [MASK] for breakfast"</span>
+        Target: <span class="hl">"apple"</span>  <span class="c">(from vocabulary of ~30,000 words)</span>
+        <br>
+        Input:  <span class="s">"The [MASK] was sweet and red"</span>
+        Target: <span class="hl">"apple"</span>
+      </div>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h4>Classic ML analogy</h4>
+          <ul>
+            <li>Predictor variables: fixed features (age, salary)</li>
+            <li>Response variable: target to predict</li>
+            <li>Weights: learned during training</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <h4>BERT equivalent</h4>
+          <ul>
+            <li>Predictor variables: other word vectors (being learned)</li>
+            <li>Response variable: the masked word label</li>
+            <li>Weights: embedding table + Transformer weights</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="insight"><strong>Key difference:</strong> In classic ML, predictor values are fixed input data. In BERT, the word vectors ARE the parameters being learned — they serve dual purpose as both input and what the model adjusts.</div>
+    </div>
+  </div>
+
+  <!-- Card 10 -->
+  <div class="card" id="embedding-table">
+    <div class="card-header">
+      <span class="card-number">10</span>
+      <div>
+        <div class="card-title">The Embedding Table — Random start, meaningful end</div>
+        <div class="card-desc">What the model actually learns and how it converges.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:14px;">Every word in BERT's vocabulary (~30,000 words) starts with a random 768D vector. These mean nothing initially. Meaning emerges through training.</p>
+
+      <div class="formula-box">
+        <span class="label">Evolution of "apple" vector during training</span>
+        Initialisation: <span class="hl4">[ 0.23, -0.87,  0.41, … ]</span>  <span class="c">(random)</span>
+        After 1M steps:  <span class="hl2">[ 0.91,  0.10,  0.73, … ]</span>  <span class="c">(converging)</span>
+        After 1B steps:  <span class="hl3">[ 0.94,  0.12,  0.71, … ]</span>  <span class="c">(stable, meaningful)</span>
+      </div>
+
+      <table class="compare-table" style="margin-top:16px;">
+        <thead><tr><th>Stage</th><th>Vector state</th><th>Meaning?</th></tr></thead>
+        <tbody>
+          <tr><td>Initialisation</td><td>Pure random numbers</td><td><span class="tag tag-red">None</span></td></tr>
+          <tr><td>Early training</td><td>Slightly adjusted random</td><td><span class="tag tag-amber">Barely</span></td></tr>
+          <tr><td>Mid training</td><td>Patterns starting to form</td><td><span class="tag tag-amber">Partial</span></td></tr>
+          <tr><td>End of training</td><td>Stable, context-aware values</td><td><span class="tag tag-green">Emergent</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Card 11 -->
+  <div class="card" id="768-dimensions">
+    <div class="card-header">
+      <span class="card-number">11</span>
+      <div>
+        <div class="card-title">768 Dimensions — What they actually encode</div>
+        <div class="card-desc">No human assigns meaning. Dimensions are emergent and entangled.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="two-col">
+        <div class="col-card">
+          <h4>2D toy example (human-assigned)</h4>
+          <p>D1 = food-related-ness (clean)<br>D2 = living-thing-related-ness (clean)</p>
+        </div>
+        <div class="col-card">
+          <h4>BERT 768D reality (emergent)</h4>
+          <p>D1 = 0.3×food + 0.2×animate + 0.1×colour + …<br>D2 = 0.4×syntax_role + 0.15×sentiment + …</p>
+        </div>
+      </div>
+
+      <p style="font-size:14px;line-height:1.7;margin:16px 0;">Researchers have probed BERT's layers and found that groups of dimensions capture interpretable patterns — but no single dimension maps to a clean concept.</p>
+
+      <div class="arch-layers">
+        <div class="arch-layer" style="background:#1a1a2e;color:white;">
+          <span class="layer-name">Layers 1–4</span>
+          <span class="layer-note">Syntax: word order, basic grammar, positional relationships</span>
+        </div>
+        <div class="arch-layer" style="background:#2a3d6e;color:white;">
+          <span class="layer-name">Layers 5–8</span>
+          <span class="layer-note">Semantics: phrase structure, subject-verb relationships</span>
+        </div>
+        <div class="arch-layer" style="background:var(--accent2);color:white;">
+          <span class="layer-name">Layers 9–12</span>
+          <span class="layer-note">Deep meaning: coreference, word sense, semantic roles</span>
+        </div>
+      </div>
+
+      <div class="insight insight-blue"><strong>Why 768?</strong> Empirically found to balance capacity (enough to encode syntax, semantics, context) and efficiency (not so large that training becomes intractable). BERT-large uses 1,024D.</div>
+    </div>
+  </div>
+
+  <!-- Card 12 -->
+  <div class="card" id="contextual-embeddings">
+    <div class="card-header">
+      <span class="card-number">12</span>
+      <div>
+        <div class="card-title">Contextual Embeddings — Same word, different vectors</div>
+        <div class="card-desc">BERT's key advantage over older Word2Vec models.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="formula-box">
+        <span class="label">Apple — two very different meanings</span>
+        <span class="s">"I bought an Apple laptop"</span>
+        "Apple" → <span class="hl4">[ 0.21, 0.88, 0.43, … ]</span>  <span class="c">(tech context dominant)</span>
+        <br>
+        <span class="s">"I ate a fresh Apple"</span>
+        "Apple" → <span class="hl3">[ 0.91, 0.12, 0.73, … ]</span>  <span class="c">(food context dominant)</span>
+      </div>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h4>Word2Vec (older)</h4>
+          <p>One fixed 768D vector per word regardless of context. "Apple" always the same.</p>
+        </div>
+        <div class="col-card">
+          <h4>BERT (contextual)</h4>
+          <p>Different vector per usage based on surrounding words. "Apple" changes with context.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 13 -->
+  <div class="card" id="rag-pipeline">
+    <div class="card-header">
+      <span class="card-number">13</span>
+      <div>
+        <div class="card-title">Embedding Pipeline — From corpus to RAG retrieval</div>
+        <div class="card-desc">How embeddings are used in production AI systems including RAG.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">After training, the model becomes a fixed <strong>embedding engine</strong>. Text in, vector out. Used for search, recommendation, and RAG retrieval.</p>
+
+      <div class="formula-box">
+        <span class="label">Offline (document ingestion — done once)</span>
+        PDF/Doc → Text extraction → Chunking (200-500 tokens)
+        → Each chunk → BERT → 768D vector → Stored in Vector DB
+        <br>
+        <span class="label">Online (query time)</span>
+        User query → BERT → Single 768D vector
+        → Cosine similarity vs all stored vectors
+        → Top-K chunks retrieved → Sent to LLM → Final answer
+      </div>
+
+      <div class="insight insight-green"><strong>Key rule:</strong> Vector DB stores one vector per chunk, not per document. A 5,000-word document becomes N chunk vectors. Retrieval finds the most relevant chunks, not the most relevant document. Chunk size and overlap are critical architecture decisions.</div>
+
+      <table class="compare-table" style="margin-top:16px;">
+        <thead><tr><th>Scenario</th><th>Final vector output</th></tr></thead>
+        <tbody>
+          <tr><td>Single sentence</td><td>1 × 768D (via [CLS] token or mean pooling)</td></tr>
+          <tr><td>Large document</td><td>N × 768D (one per chunk, stored separately)</td></tr>
+          <tr><td>User query paragraph</td><td>1 × 768D (fits in 512 token limit)</td></tr>
+          <tr><td>Query exceeds limit</td><td>Truncate or hierarchical average</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 3: TRANSFORMER -->
+<!-- ============================================================ -->
+<div id="tab-transformer" class="tab-content">
+<div class="content-area">
+  <h2 class="section-title">Transformer Internals</h2>
+  <p class="section-subtitle">Self-attention, Q/K/V matrices, 12 layers, and what backpropagation actually adjusts.</p>
+
+  <!-- Card 14 -->
+  <div class="card" id="self-attention-intuition">
+    <div class="card-header">
+      <span class="card-number">14</span>
+      <div>
+        <div class="card-title">Self-Attention — The core problem it solves</div>
+        <div class="card-desc">Why every word needs to "look at" every other word simultaneously.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:14px;">Consider these two sentences:</p>
+      <div class="formula-box">
+        <span class="s">"The animal didn't cross the street because it was too tired"</span>
+        <span class="c">→ "it" = animal</span>
+        <br>
+        <span class="s">"The animal didn't cross the street because it was too narrow"</span>
+        <span class="c">→ "it" = street</span>
+      </div>
+      <p style="font-size:14px;line-height:1.7;margin:14px 0;">Humans resolve this from context. Self-attention lets every token query every other token and decide how much attention to pay to each — simultaneously, in both directions (in BERT).</p>
+
+      <div class="insight"><strong>Key point:</strong> This is fundamentally different from older RNN models that read left-to-right sequentially. The Transformer sees the entire sentence at once via self-attention.</div>
+    </div>
+  </div>
+
+  <!-- Card 15 -->
+  <div class="card" id="qkv-mechanism">
+    <div class="card-header">
+      <span class="card-number">15</span>
+      <div>
+        <div class="card-title">Q, K, V Mechanism — The library search analogy</div>
+        <div class="card-desc">How Query, Key, and Value matrices enable contextual attention.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="compare-table" style="margin-bottom:16px;">
+        <thead><tr><th>Component</th><th>Library analogy</th><th>In BERT</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-red">Query (Q)</span></td><td>Your search query</td><td>"What am I looking for?"</td></tr>
+          <tr><td><span class="tag tag-blue">Key (K)</span></td><td>Book index/catalogue</td><td>"What do I contain?"</td></tr>
+          <tr><td><span class="tag tag-green">Value (V)</span></td><td>Actual book content</td><td>"What do I contribute?"</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:14px;line-height:1.7;margin-bottom:14px;">Every word simultaneously acts as all three. The weight matrices Wq, Wk, Wv (each 768×768 in BERT-base) transform the word vector into Q, K, V representations.</p>
+
+      <div class="formula-box">
+        <span class="label">Matrix sizes in BERT-base</span>
+        Word vector (1 × 768) × Wq (768 × 768) = Q (1 × 768)
+        Word vector (1 × 768) × Wk (768 × 768) = K (1 × 768)
+        Word vector (1 × 768) × Wv (768 × 768) = V (1 × 768)
+        <br>
+        Parameters per layer (attention only):
+        Wq + Wk + Wv = 3 × (768 × 768) ≈ <span class="hl">1.77M parameters</span>
+        Total across 12 layers ≈ <span class="hl2">21.2M parameters</span>
+      </div>
+
+      <div class="collapsible-trigger" onclick="toggleCollapse(this)">
+        <span>◆ Full 2D walkthrough — "red fruit" attention calculation</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="formula-box">
+          <span class="label">Step 1: Compute Q, K, V for each word</span>
+          <span class="c">Wq = [[0.5,0.3],[0.2,0.7]]  Wk = [[0.4,0.2],[0.3,0.8]]  Wv = [[0.6,0.1],[0.2,0.9]]</span>
+          <br>
+          Q_fruit = [0.26, 0.62]    K_fruit = [0.32, 0.68]    V_fruit = [0.28, 0.74]
+          Q_red   = [0.47, 0.34]    K_red   = [0.39, 0.26]    V_red   = [0.56, 0.18]
+          <br>
+          <span class="label">Step 2: Attention scores (Q · K)</span>
+          Score(fruit→red)   = (0.26×0.39)+(0.62×0.26) = <span class="hl">0.262</span>
+          Score(fruit→fruit) = (0.26×0.32)+(0.62×0.68) = <span class="hl2">0.505</span>
+          After Softmax: fruit attends 44% to "red", 56% to itself
+          <br>
+          <span class="label">Step 3: New contextual vector for "fruit"</span>
+          = 0.44 × V_red + 0.56 × V_fruit
+          = 0.44×[0.56,0.18] + 0.56×[0.28,0.74]
+          = <span class="hl3">[0.403, 0.493]</span>
+          <span class="c">(original: [0.2, 0.8] — shifted toward red)</span>
+        </div>
+        <div class="insight insight-green"><strong>What happened:</strong> "Fruit" is no longer just [0.2, 0.8]. After attending to "red", it now carries information about being a red thing. Its vector shifted. This is one layer of self-attention doing its work.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 16 -->
+  <div class="card" id="backpropagation-bert">
+    <div class="card-header">
+      <span class="card-number">16</span>
+      <div>
+        <div class="card-title">What Backpropagation Adjusts in BERT</div>
+        <div class="card-desc">Two distinct parameter types, adjusted simultaneously.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">For each training step on one sentence, two separate things are updated:</p>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h4>Type 1: Embedding Table</h4>
+          <p>Only the rows for words that appeared in the current sentence get nudged. Other words are untouched for this step.</p>
+          <p style="margin-top:8px;color:var(--ink-muted);font-size:12px;">30,000 words × 768D = 23M parameters</p>
+        </div>
+        <div class="col-card">
+          <h4>Type 2: Transformer Weights (Wq, Wk, Wv)</h4>
+          <p>All 12 layers' weight matrices are updated for every training step, regardless of which words appeared.</p>
+          <p style="margin-top:8px;color:var(--ink-muted);font-size:12px;">12 layers × ~7.1M each ≈ 87M parameters</p>
+        </div>
+      </div>
+
+      <div class="insight insight-amber"><strong>Key insight:</strong> The Transformer weights are general-purpose language reasoning rules — like grammar. The embedding table is the dictionary. Both are learned. Both are frozen after training.</div>
+
+      <div class="formula-box" style="margin-top:16px;">
+        <span class="label">Total BERT-base parameters</span>
+        Embedding table:      <span class="hl">~23M</span>
+        Transformer layers:   <span class="hl2">~87M</span>
+        Total:                <span class="hl3">~110M parameters</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 17 -->
+  <div class="card" id="layer-specialisation">
+    <div class="card-header">
+      <span class="card-number">17</span>
+      <div>
+        <div class="card-title">Layer Specialisation — Emergent, never configured</div>
+        <div class="card-desc">Why early layers capture syntax and late layers capture semantics — with no human instruction.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">No configuration says "Layer 1, learn grammar." Specialisation emerges naturally because each layer can only build on what the previous layer produced:</p>
+
+      <div class="arch-layers">
+        <div class="arch-layer" style="background:#e8e8df;color:var(--ink);">
+          <span class="layer-name">Input (raw embeddings)</span>
+          <span style="font-size:12px;color:var(--ink-muted)">No context yet — pure word identity</span>
+        </div>
+        <div class="arch-layer" style="background:#c8e6c9;color:#1b5e20;">
+          <span class="layer-name">Layers 1–4</span>
+          <span style="font-size:12px;">Simple local patterns → basic syntax, adjacent word relationships</span>
+        </div>
+        <div class="arch-layer" style="background:#bbdefb;color:#0d47a1;">
+          <span class="layer-name">Layers 5–8</span>
+          <span style="font-size:12px;">Phrase structure, subject-verb relationships, syntactic trees</span>
+        </div>
+        <div class="arch-layer" style="background:var(--accent2);color:white;">
+          <span class="layer-name">Layers 9–12</span>
+          <span style="font-size:12px;">Abstract semantics: word sense, coreference, entity roles</span>
+        </div>
+      </div>
+
+      <div class="insight"><strong>Is it a black box?</strong> Partially. The mathematics are fully transparent. The internal representations are studied via probing classifiers (Explainable AI / Mechanistic Interpretability research). Anthropic does significant research in this area. But we still cannot fully explain why specific dimension values emerge.</div>
+    </div>
+  </div>
+
+  <!-- Card 18 -->
+  <div class="card" id="multihead-attention">
+    <div class="card-header">
+      <span class="card-number">18</span>
+      <div>
+        <div class="card-title">Multi-Head Attention — Multiple perspectives simultaneously</div>
+        <div class="card-desc">Why BERT runs 8 attention heads in parallel per layer.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:14px;">Instead of one Q/K/V attention pass, BERT-base runs 8 attention heads simultaneously. Each head learns to attend to different aspects of the sentence:</p>
+      <ul class="step-list">
+        <li><span class="step-num">H1</span><span>Grammatical relationships ("is" → "blue")</span></li>
+        <li><span class="step-num">H2</span><span>Semantic similarity ("sky" → "blue")</span></li>
+        <li><span class="step-num">H3</span><span>Positional proximity (neighbouring words)</span></li>
+        <li><span class="step-num">H8</span><span>Long-range dependencies across sentence</span></li>
+      </ul>
+      <p style="font-size:14px;line-height:1.7;margin-top:12px;">All heads run simultaneously. Their outputs are concatenated and projected back to the original dimension (768D).</p>
+      <div class="insight insight-blue"><strong>Result:</strong> Multiple perspectives on the same sentence, processed in parallel. More robust contextualisation than a single attention pass.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 4: ARCHITECTURE -->
+<!-- ============================================================ -->
+<div id="tab-architecture" class="tab-content">
+<div class="content-area">
+  <h2 class="section-title">Architecture</h2>
+  <p class="section-subtitle">Encoder vs decoder, the original Transformer, modern LLMs, and how decoder-only models still do embeddings.</p>
+
+  <!-- ARCHITECTURE DIAGRAM CARD -->
+  <div class="card" id="transformer-diagram">
+    <div class="card-header">
+      <span class="card-number">◎</span>
+      <div>
+        <div class="card-title">Original Transformer — Interactive Architecture Diagram</div>
+        <div class="card-desc">Hover any block for details. Click to jump to the corresponding explanation card below.</div>
+      </div>
+    </div>
+    <div class="card-body" style="padding:16px 24px 24px;">
+
+      <!-- Legend -->
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;font-size:12px;font-family:'DM Mono',monospace;">
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:3px;background:#f9c6c9;border:1px solid #e88;display:inline-block;"></span>Embedding</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:3px;background:#fde8b8;border:1px solid #e8b860;display:inline-block;"></span>Attention</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:3px;background:#b8d8f8;border:1px solid #6aaee8;display:inline-block;"></span>Feed Forward</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:3px;background:#e8f5b8;border:1px solid #a8c840;display:inline-block;"></span>Add &amp; Norm</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:3px;background:#d8c8f0;border:1px solid #a080d0;display:inline-block;"></span>Linear</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:3px;background:#b8f0d8;border:1px solid #40c080;display:inline-block;"></span>Softmax</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:3px;background:#ffd700;border:1px dashed #b8860b;display:inline-block;"></span>Highlighted on hover</span>
+      </div>
+
+      <!-- SVG DIAGRAM -->
+      <div style="overflow-x:auto;">
+      <svg id="arch-svg" viewBox="0 0 760 820" width="100%" style="max-width:760px;display:block;margin:0 auto;font-family:'Syne',sans-serif;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M1 1L9 5L1 9" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="ah-cross" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M1 1L9 5L1 9" fill="none" stroke="#e63946" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- ═══ BACKGROUND PANELS ═══ -->
+        <!-- Encoder panel -->
+        <rect x="30" y="140" width="280" height="520" rx="14" fill="#f5f5f0" stroke="#ccc" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <text x="170" y="132" text-anchor="middle" font-size="13" font-weight="700" fill="#555" letter-spacing="1">ENCODER</text>
+        <text x="44" y="300" font-size="11" fill="#aaa" font-family="'DM Mono',monospace">Nx</text>
+
+        <!-- Decoder panel -->
+        <rect x="450" y="60" width="280" height="610" rx="14" fill="#f5f5f0" stroke="#ccc" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <text x="590" y="52" text-anchor="middle" font-size="13" font-weight="700" fill="#555" letter-spacing="1">DECODER</text>
+        <text x="464" y="330" font-size="11" fill="#aaa" font-family="'DM Mono',monospace">Nx</text>
+
+        <!-- ═══ ENCODER COMPONENTS ═══ -->
+
+        <!-- Input Embedding -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Input Embedding: Converts input tokens (words/subwords) to 768D vectors via embedding table lookup. Every word gets its initial vector here.">
+          <rect x="80" y="640" width="180" height="38" rx="8" fill="#f9c6c9" stroke="#e88" stroke-width="1.5"/>
+          <text x="170" y="664" text-anchor="middle" font-size="13" font-weight="600" fill="#8b2020">Input Embedding</text>
+        </g>
+
+        <!-- Positional Encoding + symbol — Encoder -->
+        <circle cx="170" cy="600" r="16" fill="white" stroke="#888" stroke-width="1.5"/>
+        <text x="170" y="605" text-anchor="middle" font-size="16" fill="#555">⊕</text>
+        <text x="100" y="604" text-anchor="end" font-size="11" fill="#666" font-family="'DM Mono',monospace">Pos. Enc.</text>
+        <!-- sine wave icon -->
+        <path d="M56 598 Q60 592 64 598 Q68 604 72 598" fill="none" stroke="#888" stroke-width="1.5"/>
+
+        <!-- Encoder Multi-Head Attention -->
+        <g class="arch-block" data-id="qkv-mechanism" data-tip="Multi-Head Attention (Encoder): Bidirectional self-attention — every token attends to every other token simultaneously. 8 heads run in parallel, each capturing different relationships (grammar, semantics, proximity).">
+          <rect x="80" y="490" width="180" height="44" rx="8" fill="#fde8b8" stroke="#e8b860" stroke-width="1.5"/>
+          <text x="170" y="510" text-anchor="middle" font-size="13" font-weight="600" fill="#7a4a00">Multi-Head</text>
+          <text x="170" y="526" text-anchor="middle" font-size="13" font-weight="600" fill="#7a4a00">Attention</text>
+        </g>
+
+        <!-- Encoder Add & Norm 1 -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Add & Norm: Two operations. (1) Residual connection: adds the original input back to prevent vanishing gradients. (2) Layer Normalisation: scales values to mean=0, std=1 for training stability.">
+          <rect x="80" y="440" width="180" height="34" rx="8" fill="#e8f5b8" stroke="#a8c840" stroke-width="1.5"/>
+          <text x="170" y="462" text-anchor="middle" font-size="13" font-weight="600" fill="#3a5010">Add &amp; Norm</text>
+        </g>
+
+        <!-- Encoder Feed Forward -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Feed Forward: Two linear layers with ReLU activation. Expands from 768D → 3072D → 768D. Adds non-linearity and lets the model transform representations in ways pure attention cannot.">
+          <rect x="80" y="376" width="180" height="44" rx="8" fill="#b8d8f8" stroke="#6aaee8" stroke-width="1.5"/>
+          <text x="170" y="396" text-anchor="middle" font-size="13" font-weight="600" fill="#103060">Feed</text>
+          <text x="170" y="412" text-anchor="middle" font-size="13" font-weight="600" fill="#103060">Forward</text>
+        </g>
+
+        <!-- Encoder Add & Norm 2 -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Add & Norm: Second residual + normalisation, applied after Feed Forward. Keeps gradients flowing across all N=6 layers.">
+          <rect x="80" y="330" width="180" height="34" rx="8" fill="#e8f5b8" stroke="#a8c840" stroke-width="1.5"/>
+          <text x="170" y="352" text-anchor="middle" font-size="13" font-weight="600" fill="#3a5010">Add &amp; Norm</text>
+        </g>
+
+        <!-- Encoder output label -->
+        <text x="170" y="248" text-anchor="middle" font-size="11" fill="#888" font-family="'DM Mono',monospace">Encoder output</text>
+        <text x="170" y="262" text-anchor="middle" font-size="11" fill="#888" font-family="'DM Mono',monospace">(K, V for cross-attention)</text>
+
+        <!-- ═══ ENCODER FLOW ARROWS ═══ -->
+        <!-- Input label → embedding -->
+        <text x="170" y="796" text-anchor="middle" font-size="13" fill="#333" font-weight="600">Inputs</text>
+        <line x1="170" y1="786" x2="170" y2="680" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- embedding → pos enc circle -->
+        <line x1="170" y1="640" x2="170" y2="617" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- pos enc → attention -->
+        <line x1="170" y1="584" x2="170" y2="534" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- attention → add norm 1 -->
+        <line x1="170" y1="490" x2="170" y2="475" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- add norm 1 → ff -->
+        <line x1="170" y1="440" x2="170" y2="421" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- ff → add norm 2 -->
+        <line x1="170" y1="376" x2="170" y2="365" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- add norm 2 → top (encoder output arrow going up and right) -->
+        <line x1="170" y1="330" x2="170" y2="270" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- Residual connection — attention (curved arrow on left) -->
+        <path d="M82 534 Q46 512 46 466 Q46 440 82 440" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ah)"/>
+        <!-- Residual connection — feed forward (curved arrow on left) -->
+        <path d="M82 421 Q46 398 46 353 Q46 330 82 330" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ah)"/>
+
+        <!-- Self-attention loop arrows (bottom of attention block) -->
+        <path d="M120 534 Q120 556 150 556 Q180 556 180 534" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+
+        <!-- ═══ DECODER COMPONENTS ═══ -->
+
+        <!-- Output Embedding -->
+        <g class="arch-block" data-id="decoder-only-embedding" data-tip="Output Embedding: Same mechanism as encoder — converts already-generated tokens to 768D vectors. The decoder always takes what has been generated so far as its input.">
+          <rect x="500" y="640" width="180" height="38" rx="8" fill="#f9c6c9" stroke="#e88" stroke-width="1.5"/>
+          <text x="590" y="664" text-anchor="middle" font-size="13" font-weight="600" fill="#8b2020">Output Embedding</text>
+        </g>
+
+        <!-- Positional Encoding + symbol — Decoder -->
+        <circle cx="590" cy="600" r="16" fill="white" stroke="#888" stroke-width="1.5"/>
+        <text x="590" y="605" text-anchor="middle" font-size="16" fill="#555">⊕</text>
+        <text x="660" y="604" text-anchor="start" font-size="11" fill="#666" font-family="'DM Mono',monospace">Pos. Enc.</text>
+        <path d="M676 598 Q680 592 684 598 Q688 604 692 598" fill="none" stroke="#888" stroke-width="1.5"/>
+
+        <!-- Masked Multi-Head Attention -->
+        <g class="arch-block" data-id="original-transformer" data-tip="Masked Multi-Head Attention: Self-attention on generated tokens, but with a causal mask — each token can only attend to previous tokens, not future ones. Prevents the decoder from 'cheating' by looking ahead.">
+          <rect x="500" y="490" width="180" height="55" rx="8" fill="#fde8b8" stroke="#e8b860" stroke-width="1.5"/>
+          <text x="590" y="512" text-anchor="middle" font-size="13" font-weight="600" fill="#7a4a00">Masked Multi-Head</text>
+          <text x="590" y="529" text-anchor="middle" font-size="13" font-weight="600" fill="#7a4a00">Attention</text>
+        </g>
+
+        <!-- Decoder Add & Norm 1 -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Add & Norm: Residual connection + layer normalisation applied after masked self-attention.">
+          <rect x="500" y="440" width="180" height="34" rx="8" fill="#e8f5b8" stroke="#a8c840" stroke-width="1.5"/>
+          <text x="590" y="462" text-anchor="middle" font-size="13" font-weight="600" fill="#3a5010">Add &amp; Norm</text>
+        </g>
+
+        <!-- Cross-Attention (Multi-Head Attention in decoder) -->
+        <g class="arch-block" data-id="original-transformer" data-tip="Cross-Attention: The bridge between encoder and decoder. Q comes from the decoder (what we are generating), but K and V come from encoder output (the full source sentence). 'bleu' attends most to 'blue' in the English source.">
+          <rect x="500" y="360" width="180" height="55" rx="8" fill="#fde8b8" stroke="#e8b860" stroke-width="2"/>
+          <text x="590" y="382" text-anchor="middle" font-size="13" font-weight="600" fill="#7a4a00">Multi-Head</text>
+          <text x="590" y="398" text-anchor="middle" font-size="13" font-weight="600" fill="#7a4a00">Attention</text>
+          <!-- cross-attention label badge -->
+          <rect x="518" y="406" width="144" height="16" rx="4" fill="#e63946" opacity="0.12"/>
+          <text x="590" y="418" text-anchor="middle" font-size="10" fill="#e63946" font-weight="700">cross-attention</text>
+        </g>
+
+        <!-- Decoder Add & Norm 2 -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Add & Norm: Residual + normalisation after cross-attention.">
+          <rect x="500" y="310" width="180" height="34" rx="8" fill="#e8f5b8" stroke="#a8c840" stroke-width="1.5"/>
+          <text x="590" y="332" text-anchor="middle" font-size="13" font-weight="600" fill="#3a5010">Add &amp; Norm</text>
+        </g>
+
+        <!-- Decoder Feed Forward -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Feed Forward: Same expand-ReLU-compress operation as encoder. Applied independently per token position.">
+          <rect x="500" y="240" width="180" height="44" rx="8" fill="#b8d8f8" stroke="#6aaee8" stroke-width="1.5"/>
+          <text x="590" y="260" text-anchor="middle" font-size="13" font-weight="600" fill="#103060">Feed</text>
+          <text x="590" y="276" text-anchor="middle" font-size="13" font-weight="600" fill="#103060">Forward</text>
+        </g>
+
+        <!-- Decoder Add & Norm 3 -->
+        <g class="arch-block" data-id="transformer-components" data-tip="Add & Norm: Third residual + normalisation after feed-forward in the decoder.">
+          <rect x="500" y="190" width="180" height="34" rx="8" fill="#e8f5b8" stroke="#a8c840" stroke-width="1.5"/>
+          <text x="590" y="212" text-anchor="middle" font-size="13" font-weight="600" fill="#3a5010">Add &amp; Norm</text>
+        </g>
+
+        <!-- Linear -->
+        <g class="arch-block" data-id="generation-mechanism" data-tip="Linear layer: Projects the final 768D decoder vector to vocabulary size (~30,000 or 50,000). Produces one raw score (logit) per word in the vocabulary.">
+          <rect x="500" y="130" width="180" height="38" rx="8" fill="#d8c8f0" stroke="#a080d0" stroke-width="1.5"/>
+          <text x="590" y="154" text-anchor="middle" font-size="13" font-weight="600" fill="#40207a">Linear</text>
+        </g>
+
+        <!-- Softmax -->
+        <g class="arch-block" data-id="generation-mechanism" data-tip="Softmax: Converts raw logit scores to probabilities that sum to 1. The word with the highest probability is selected as the next generated token (or sampled based on temperature).">
+          <rect x="500" y="72" width="180" height="38" rx="8" fill="#b8f0d8" stroke="#40c080" stroke-width="1.5"/>
+          <text x="590" y="96" text-anchor="middle" font-size="13" font-weight="600" fill="#0a5030">Softmax</text>
+        </g>
+
+        <!-- Output label -->
+        <text x="590" y="796" text-anchor="middle" font-size="13" fill="#333" font-weight="600">Outputs (shifted right)</text>
+
+        <!-- ═══ DECODER FLOW ARROWS ═══ -->
+        <!-- output label → embedding -->
+        <line x1="590" y1="786" x2="590" y2="680" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- embedding → pos enc -->
+        <line x1="590" y1="640" x2="590" y2="617" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- pos enc → masked attention -->
+        <line x1="590" y1="584" x2="590" y2="545" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- masked attention → add norm 1 -->
+        <line x1="590" y1="490" x2="590" y2="475" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- add norm 1 → cross attention -->
+        <line x1="590" y1="440" x2="590" y2="415" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- cross attention → add norm 2 -->
+        <line x1="590" y1="360" x2="590" y2="345" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- add norm 2 → ff -->
+        <line x1="590" y1="310" x2="590" y2="285" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- ff → add norm 3 -->
+        <line x1="590" y1="240" x2="590" y2="225" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- add norm 3 → linear -->
+        <line x1="590" y1="190" x2="590" y2="169" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- linear → softmax -->
+        <line x1="590" y1="130" x2="590" y2="111" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- softmax → output label -->
+        <text x="590" y="38" text-anchor="middle" font-size="12" fill="#0a5030" font-weight="700">Output Probabilities</text>
+        <line x1="590" y1="72" x2="590" y2="44" stroke="#40c080" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- Residual connection — masked attention -->
+        <path d="M502 545 Q468 522 468 460 Q468 440 502 440" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ah)"/>
+        <!-- Residual connection — cross attention -->
+        <path d="M502 415 Q468 392 468 328 Q468 310 502 310" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ah)"/>
+        <!-- Residual connection — feed forward -->
+        <path d="M502 285 Q468 262 468 208 Q468 190 502 190" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ah)"/>
+
+        <!-- Self-attention loop arrows (masked) -->
+        <path d="M540 545 Q540 566 570 566 Q610 566 610 545" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+
+        <!-- ═══ CROSS-ATTENTION CONNECTION (Encoder → Decoder) ═══ -->
+        <!-- Encoder output → decoder cross-attention (K, V arrow) -->
+        <path d="M170 270 Q170 210 310 210 Q390 210 500 388" fill="none" stroke="#e63946" stroke-width="2" stroke-dasharray="7,3" marker-end="url(#ah-cross)"/>
+        <text x="310" y="200" text-anchor="middle" font-size="11" fill="#e63946" font-weight="700" font-family="'DM Mono',monospace">K, V</text>
+
+        <!-- ═══ TOOLTIP OVERLAY ═══ -->
+        <rect id="tip-bg" x="0" y="0" width="0" height="0" rx="8" fill="#1a1a2e" opacity="0.95"/>
+        <foreignObject id="tip-fo" x="0" y="0" width="0" height="0">
+          <div xmlns="http://www.w3.org/1999/xhtml" id="tip-text" style="color:white;font-size:12px;font-family:'Syne',sans-serif;padding:10px 14px;line-height:1.6;"></div>
+        </foreignObject>
+      </svg>
+      </div>
+
+      <!-- Click-to-navigate hint -->
+      <p style="text-align:center;font-size:12px;color:var(--ink-muted);margin-top:10px;font-family:'DM Mono',monospace;">
+        ↑ Hover any block for details · Click to jump to explanation card
+      </p>
+    </div>
+  </div>
+
+  <!-- Card 19 -->
+  <div class="card" id="encoder-vs-decoder">
+    <div class="card-header">
+      <span class="card-number">19</span>
+      <div>
+        <div class="card-title">Encoder vs Decoder — Two different jobs</div>
+        <div class="card-desc">Why BERT is encoder-only and GPT/Claude are decoder-only.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="compare-table">
+        <thead><tr><th>Model</th><th>Type</th><th>Job</th><th>Attention direction</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-blue">BERT</span></td><td>Encoder only</td><td>Understanding, embedding, retrieval</td><td>Bidirectional (sees full sentence)</td></tr>
+          <tr><td><span class="tag tag-red">GPT / Claude / Gemini</span></td><td>Decoder only</td><td>Generation, next token prediction</td><td>Left-to-right masked only</td></tr>
+          <tr><td><span class="tag tag-green">T5 / BART / Whisper</span></td><td>Encoder + Decoder</td><td>Translation, seq-to-seq tasks</td><td>Bidirectional encoder + masked decoder</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight insight-blue"><strong>Why decoder-only won for modern LLMs:</strong> The prompt tokens serve as the "encoding" — they are all processed in the same self-attention space as the generated tokens. No separate component needed for same-language tasks. This scales better and handles all tasks through careful prompting.</div>
+    </div>
+  </div>
+
+  <!-- Card 20 -->
+  <div class="card" id="original-transformer">
+    <div class="card-header">
+      <span class="card-number">20</span>
+      <div>
+        <div class="card-title">Original Transformer (2017) — Encoder + Decoder</div>
+        <div class="card-desc">Designed for machine translation. "Attention Is All You Need."</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">The original Transformer needed both components because translation requires two distinct operations:</p>
+
+      <div class="formula-box">
+        <span class="label">Translation pipeline</span>
+        Input:  <span class="s">"The sky is blue"</span>  (English)
+        <br>
+        <span class="hl">ENCODER</span>  →  Bidirectional attention  →  Rich contextual vectors for all 4 tokens
+        <br>
+        <span class="hl2">DECODER</span>  →  Masked attention + cross-attention  →  Generates "Le ciel est bleu"
+        <br>
+        Output: <span class="s">"Le ciel est bleu"</span>  (French)
+      </div>
+
+      <p style="font-size:14px;line-height:1.7;margin:14px 0;font-weight:600;">Decoder has THREE attention operations per layer:</p>
+      <ul class="step-list">
+        <li><span class="step-num">1</span><span><strong>Masked self-attention:</strong> Generated tokens attend to previous generated tokens only (left-to-right).</span></li>
+        <li><span class="step-num">2</span><span><strong>Cross-attention:</strong> Decoder Q × Encoder K and V. This is the bridge. "bleu" attends most to "blue" in the source. Q from decoder, K and V from encoder output.</span></li>
+        <li><span class="step-num">3</span><span><strong>Feed-forward:</strong> Standard transformation applied per token position.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 21 -->
+  <div class="card" id="transformer-components">
+    <div class="card-header">
+      <span class="card-number">21</span>
+      <div>
+        <div class="card-title">Every Component Explained — Input to Output</div>
+        <div class="card-desc">What goes in, what happens, what comes out — for each block.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="compare-table">
+        <thead><tr><th>Component</th><th>Where</th><th>What happens inside</th><th>Output</th></tr></thead>
+        <tbody>
+          <tr><td>Input Embedding</td><td>Encoder</td><td>Embedding table lookup</td><td>2D/768D vector per token</td></tr>
+          <tr><td>Positional Encoding</td><td>Both</td><td>Add fixed sine/cosine position signal</td><td>Vectors with order information</td></tr>
+          <tr><td>Multi-Head Attention</td><td>Encoder</td><td>Bidirectional Q/K/V, 8 heads</td><td>Context-aware vectors</td></tr>
+          <tr><td>Add &amp; Norm</td><td>Both</td><td>Add original input (residual) + normalise</td><td>Stable vectors, mean=0, std=1</td></tr>
+          <tr><td>Feed Forward</td><td>Both</td><td>Expand (768→3072), ReLU, compress (3072→768)</td><td>Non-linearly transformed vectors</td></tr>
+          <tr><td>Masked Multi-Head Attn</td><td>Decoder</td><td>Left-to-right Q/K/V only — no future tokens</td><td>Causal context vectors</td></tr>
+          <tr><td>Cross-Attention</td><td>Decoder</td><td>Q from decoder, K+V from encoder</td><td>Translation-informed vectors</td></tr>
+          <tr><td>Linear + Softmax</td><td>Output</td><td>Project to vocab size, convert to probabilities</td><td>Probability per word</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight insight-amber"><strong>Add &amp; Norm purpose:</strong> The residual connection lets gradients flow during backpropagation through many layers (prevents vanishing gradients). Layer Normalisation keeps values stable across all tokens and layers, making training faster.</div>
+    </div>
+  </div>
+
+  <!-- Card 22 -->
+  <div class="card" id="positional-encoding">
+    <div class="card-header">
+      <span class="card-number">22</span>
+      <div>
+        <div class="card-title">Positional Encoding — Teaching word order</div>
+        <div class="card-desc">Why embeddings alone cannot distinguish "dog bites man" from "man bites dog".</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:14px;">After embedding, the model sees N vectors with no positional information. "The sky is blue" and "blue is sky The" produce identical sets of vectors. Positional encoding adds a unique signal per position:</p>
+      <div class="formula-box">
+        <span class="label">Position signal added to each vector</span>
+        Position 1 ("The"):  [0.1, 0.2] + [0.00,  0.10] = <span class="hl">[0.10, 0.30]</span>
+        Position 2 ("sky"):  [0.5, 0.8] + [0.09,  0.10] = <span class="hl2">[0.59, 0.90]</span>
+        Position 3 ("is"):   [0.2, 0.1] + [0.14,  0.00] = <span class="hl3">[0.34, 0.10]</span>
+        Position 4 ("blue"): [0.9, 0.3] + [0.09, -0.10] = <span class="hl4">[0.99, 0.20]</span>
+      </div>
+      <div class="insight insight-green"><strong>Key detail:</strong> Positional encoding values are not learned — they are fixed mathematical values using sine and cosine functions. Each position gets a unique pattern the model learns to recognise.</div>
+    </div>
+  </div>
+
+  <!-- Card 23 -->
+  <div class="card" id="decoder-only-embedding">
+    <div class="card-header">
+      <span class="card-number">23</span>
+      <div>
+        <div class="card-title">Decoder-Only Models — The prompt IS the encoding</div>
+        <div class="card-desc">Clarifying a common misconception: embedding table still exists.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="insight"><strong>Common misconception:</strong> "Decoder-only means no text-to-vector conversion." Wrong. Every Transformer model has an embedding table. The decoder-only model still converts tokens to vectors first.</div>
+
+      <p style="font-size:14px;line-height:1.7;margin:16px 0;">What decoder-only models lack is a <em>separate encoder component with its own independent layers</em>. The difference is the attention pattern, not whether embedding happens:</p>
+
+      <div class="formula-box">
+        <span class="label">Decoder-only forward pass (GPT/Claude)</span>
+        User prompt: <span class="s">"The sky is"</span>
+        <br>
+        Step 1: Embedding table lookup (same as BERT)
+        "The" → [768D],  "sky" → [768D],  "is" → [768D]
+        <br>
+        Step 2: Masked self-attention (left-to-right only)
+        "sky" can see "The" ✓    "sky" cannot see "is" ✗
+        <br>
+        Step 3: Predict next token from last position vector
+        → probability distribution over vocabulary → "blue"
+        <br>
+        Step 4: Append "blue", repeat
+      </div>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h4>Encoder + Decoder (translation)</h4>
+          <p>Like two people: one reads English aloud, other listens and writes French. Two distinct components, two distinct processes.</p>
+        </div>
+        <div class="col-card">
+          <h4>Decoder Only (GPT/Claude)</h4>
+          <p>Like one person who reads the prompt and continues writing. Same component, same attention space.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 24 -->
+  <div class="card" id="generation-mechanism">
+    <div class="card-header">
+      <span class="card-number">24</span>
+      <div>
+        <div class="card-title">Text Generation — One token at a time</div>
+        <div class="card-desc">How LLMs generate coherent text through next-token prediction and sampling.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;line-height:1.7;margin-bottom:16px;">Decoder models are trained on one task: given everything so far, predict the next token. Generation then runs this in a loop:</p>
+
+      <div class="formula-box">
+        <span class="label">Generation loop — "The sky is"</span>
+        Step 1: Input [The][sky][is]
+                Output: blue=0.42, clear=0.28, dark=0.15 → select <span class="hl">"blue"</span>
+        <br>
+        Step 2: Input [The][sky][is][blue]
+                Output: .=0.28, and=0.31, today=0.22  → select <span class="hl">"."</span>
+        <br>
+        Step 3: Input [The][sky][is][blue][.]
+                Output: [EOS]=0.91                      → <span class="hl3">stop</span>
+      </div>
+
+      <p style="font-size:14px;line-height:1.7;margin:16px 0;font-weight:600;">Sampling strategies:</p>
+      <table class="compare-table">
+        <thead><tr><th>Strategy</th><th>Behaviour</th><th>Use case</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-amber">Greedy (temp=0)</span></td><td>Always picks highest probability</td><td>Factual tasks, deterministic output</td></tr>
+          <tr><td><span class="tag tag-blue">Top-K sampling</span></td><td>Randomly samples from top-K options</td><td>More varied, natural-sounding text</td></tr>
+          <tr><td><span class="tag tag-green">Temperature 0.7–0.9</span></td><td>Balanced randomness</td><td>Most chat applications including Claude</td></tr>
+          <tr><td><span class="tag tag-red">Temperature 1.5+</span></td><td>Flat probabilities, creative output</td><td>Creative writing, brainstorming</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight insight-blue"><strong>Context window:</strong> The entire conversation history (system prompt + all previous turns + current generation) lives in the context window. Every generation step attends to everything before it. This is how models stay coherent across long responses — the self-attention mechanism allows any token to attend to any previous token in the window.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 5: QUICK REFERENCE -->
+<!-- ============================================================ -->
+<div id="tab-reference" class="tab-content">
+<div class="content-area">
+  <h2 class="section-title">Quick Reference</h2>
+  <p class="section-subtitle">Formulas, comparison tables, use-case cheat sheets, and the LLM architecture comparison.</p>
+
+  <!-- Formula cheat sheet -->
+  <div class="card" id="formula-cheatsheet">
+    <div class="card-header">
+      <span class="card-number">FR</span>
+      <div>
+        <div class="card-title">Formula Cheat Sheet</div>
+        <div class="card-desc">All key formulas from the conversation in one place.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="ref-grid">
+        <div class="ref-card">
+          <h4>Dot Product</h4>
+          <div class="formula-box" style="margin:0;font-size:12px;">
+            A · B = Σ aᵢbᵢ
+            = <span class="hl">|A||B|cos(θ)</span>
+          </div>
+        </div>
+        <div class="ref-card">
+          <h4>Cosine Similarity</h4>
+          <div class="formula-box" style="margin:0;font-size:12px;">
+            cos_sim = <span class="hl">A · B</span>
+                    / <span class="hl2">(|A| × |B|)</span>
+            Range: [-1, 1]
+          </div>
+        </div>
+        <div class="ref-card">
+          <h4>Vector Magnitude (L2 norm)</h4>
+          <div class="formula-box" style="margin:0;font-size:12px;">
+            |V| = <span class="hl">√(v₁² + v₂² + … + vₙ²)</span>
+          </div>
+        </div>
+        <div class="ref-card">
+          <h4>Softmax</h4>
+          <div class="formula-box" style="margin:0;font-size:12px;">
+            σ(xᵢ) = <span class="hl">eˣⁱ / Σ eˣʲ</span>
+            Maps scores → probabilities
+          </div>
+        </div>
+        <div class="ref-card">
+          <h4>Attention Score</h4>
+          <div class="formula-box" style="margin:0;font-size:12px;">
+            score = <span class="hl">Q · K</span>
+            weight = softmax(score / √dₖ)
+            output = weight × <span class="hl2">V</span>
+          </div>
+        </div>
+        <div class="ref-card">
+          <h4>BERT-base Parameters</h4>
+          <div class="formula-box" style="margin:0;font-size:12px;">
+            Embedding table: <span class="hl">23M</span>
+            Transformer layers: <span class="hl2">87M</span>
+            Total: <span class="hl3">~110M</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Apple/Fruit running example -->
+  <div class="card" id="apple-fruit-tracker">
+    <div class="card-header">
+      <span class="card-number">EX</span>
+      <div>
+        <div class="card-title">The Apple &amp; Fruit Example — Complete thread</div>
+        <div class="card-desc">How this one example evolved across all topics in our conversation.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="example-thread">Running example across 8 topics</div>
+      <ul class="step-list">
+        <li><span class="step-num">1</span><span><strong>Dot product:</strong> Apple [0.9,0.1] · Fruit [0.8,0.2] = <strong>0.74</strong> vs Apple · Animal [0.1,0.9] = <strong>0.36</strong>. Similarity correctly captured.</span></li>
+        <li><span class="step-num">2</span><span><strong>Magnitude:</strong> |Apple| ≈ 0.906, |Fruit| ≈ 0.825. Calculated via L2 norm.</span></li>
+        <li><span class="step-num">3</span><span><strong>Cosine similarity:</strong> 0.74 / (0.906 × 0.825) ≈ <strong>0.991</strong>. Nearly identical direction.</span></li>
+        <li><span class="step-num">4</span><span><strong>Magnitude problem:</strong> Animal [0.9,0.9] → dot product 1.08 beats Fruit. Cosine correctly restores Fruit to winner (0.990 vs 0.894).</span></li>
+        <li><span class="step-num">5</span><span><strong>Document vectors:</strong> "An apple a day…" averaged to [0.263, 0.125]. Dot product with query "apple" [0.9,0.1] = 0.25. Cosine ≈ 0.947.</span></li>
+        <li><span class="step-num">6</span><span><strong>Embeddings:</strong> Apple and Fruit appear in the same sentence contexts → model pushes vectors to similar directions.</span></li>
+        <li><span class="step-num">7</span><span><strong>Contextual BERT:</strong> "I bought an Apple laptop" → Apple vector dominated by tech dimensions. "I ate a fresh Apple" → food dimensions dominant.</span></li>
+        <li><span class="step-num">8</span><span><strong>Self-attention:</strong> "red fruit" → "fruit" after attending to "red" shifts from [0.2, 0.8] to [0.403, 0.493]. Vectors blend contextually.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dot product vs cosine comparison -->
+  <div class="card" id="dot-vs-cosine-full">
+    <div class="card-header">
+      <span class="card-number">C1</span>
+      <div>
+        <div class="card-title">Dot Product vs Cosine Similarity — Full comparison</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="compare-table">
+        <thead><tr><th>Aspect</th><th>Dot Product</th><th>Cosine Similarity</th></tr></thead>
+        <tbody>
+          <tr><td>Range</td><td>Unbounded (−∞ to +∞)</td><td>Fixed: −1 to +1</td></tr>
+          <tr><td>Magnitude sensitive</td><td><span class="tag tag-red">Yes</span> — larger vectors score higher</td><td><span class="tag tag-green">No</span> — normalised out</td></tr>
+          <tr><td>Interpretable alone</td><td><span class="tag tag-amber">Relative only</span> (ranking)</td><td><span class="tag tag-green">Yes</span> (absolute score)</td></tr>
+          <tr><td>Computational cost</td><td>Lower (no sqrt/division)</td><td>Higher (requires magnitudes)</td></tr>
+          <tr><td>Best for</td><td>Attention, recommendations</td><td>Document search, RAG, NLP</td></tr>
+          <tr><td>Long document bias</td><td><span class="tag tag-red">Yes</span> — favours long docs</td><td><span class="tag tag-green">No</span> — normalised by length</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BERT vs GPT comparison -->
+  <div class="card" id="bert-vs-gpt">
+    <div class="card-header">
+      <span class="card-number">C2</span>
+      <div>
+        <div class="card-title">BERT vs GPT-style Models — Full comparison</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="compare-table">
+        <thead><tr><th>Aspect</th><th>BERT (Encoder)</th><th>GPT / Claude / Gemini (Decoder)</th></tr></thead>
+        <tbody>
+          <tr><td>Training task</td><td>Predict masked word (MLM)</td><td>Predict next token</td></tr>
+          <tr><td>Attention direction</td><td>Bidirectional (all tokens)</td><td>Left-to-right masked only</td></tr>
+          <tr><td>Output</td><td>768D vector per token</td><td>Probability over vocabulary</td></tr>
+          <tr><td>Generation capable</td><td><span class="tag tag-red">No</span></td><td><span class="tag tag-green">Yes</span></td></tr>
+          <tr><td>Embedding quality</td><td><span class="tag tag-green">Excellent</span> (bidirectional)</td><td>Usable (last token or mean pool)</td></tr>
+          <tr><td>Context handling</td><td>Full sentence at once</td><td>Everything generated so far</td></tr>
+          <tr><td>Primary use</td><td>Embeddings, classification, RAG</td><td>Chat, code gen, summarisation</td></tr>
+          <tr><td>Handles new sentences</td><td>Yes (Transformer weights general)</td><td>Yes (same reason)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modern LLM comparison -->
+  <div class="card" id="llm-comparison">
+    <div class="card-header">
+      <span class="card-number">C3</span>
+      <div>
+        <div class="card-title">Modern LLM Architecture Comparison</div>
+        <div class="card-desc">From BERT to frontier models. Estimated values marked clearly.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="insight insight-amber"><strong>Transparency note:</strong> Frontier models (Claude, GPT-5, Gemini 2.5 Pro) do not publicly disclose exact architectural details. Values marked "est." are from researcher analysis and leaks, not official disclosures.</div>
+
+      <table class="compare-table" style="margin-top:16px;">
+        <thead>
+          <tr>
+            <th>Model</th><th>Hidden Dim</th><th>Layers</th><th>Parameters</th><th>Context</th><th>Architecture</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>BERT-base</strong><br><span style="font-size:11px;color:var(--ink-muted)">Google 2018</span></td>
+            <td>768</td><td>12</td><td>110M</td><td>512 tokens</td>
+            <td><span class="tag tag-blue">Dense encoder</span></td>
+          </tr>
+          <tr>
+            <td><strong>GPT-3</strong><br><span style="font-size:11px;color:var(--ink-muted)">OpenAI 2020</span></td>
+            <td>12,288</td><td>96</td><td>175B</td><td>4K tokens</td>
+            <td><span class="tag tag-red">Dense decoder</span></td>
+          </tr>
+          <tr>
+            <td><strong>LLaMA 2 70B</strong><br><span style="font-size:11px;color:var(--ink-muted)">Meta 2023</span></td>
+            <td>8,192</td><td>80</td><td>70B</td><td>4K tokens</td>
+            <td><span class="tag tag-red">Dense decoder</span></td>
+          </tr>
+          <tr>
+            <td><strong>GPT-4 / GPT-5</strong><br><span style="font-size:11px;color:var(--ink-muted)">OpenAI 2023-25</span></td>
+            <td>~12K–16K <em>est.</em></td><td>~96-120 <em>est.</em></td><td>~1.76T <em>est.</em></td><td>128K tokens</td>
+            <td><span class="tag tag-amber">MoE decoder</span></td>
+          </tr>
+          <tr>
+            <td><strong>Gemini 2.5 Pro</strong><br><span style="font-size:11px;color:var(--ink-muted)">Google 2025</span></td>
+            <td>Not disclosed</td><td>Not disclosed</td><td>~1T+ <em>est.</em></td><td>1M tokens</td>
+            <td><span class="tag tag-amber">Sparse MoE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Claude Sonnet 4.6</strong><br><span style="font-size:11px;color:var(--ink-muted)">Anthropic 2026</span></td>
+            <td>4,096 <em>partial</em></td><td>Not disclosed</td><td>Not disclosed</td><td>1M tokens (beta)</td>
+            <td><span class="tag tag-blue">Dense decoder</span></td>
+          </tr>
+          <tr>
+            <td><strong>LLaMA 4 Maverick</strong><br><span style="font-size:11px;color:var(--ink-muted)">Meta 2025 (open)</span></td>
+            <td>Not disclosed</td><td>Not disclosed</td><td>400B total / 17B active</td><td>1M tokens</td>
+            <td><span class="tag tag-amber">MoE (128 experts)</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:13px;color:var(--ink-muted);margin-top:16px;line-height:1.6;"><strong>Key architectural shift — MoE (Mixture of Experts):</strong> Nearly all frontier models have moved from dense (all parameters activate per token) to sparse MoE (a router selects a small subset of "expert" networks per token). Total parameters grow very large, but active parameters per token stay manageable. LLaMA 4 Maverick: 17B active from 400B total across 128 experts.</p>
+    </div>
+  </div>
+
+  <!-- Transformer architecture family tree -->
+  <div class="card" id="transformer-family">
+    <div class="card-header">
+      <span class="card-number">C4</span>
+      <div>
+        <div class="card-title">Transformer Family Tree</div>
+        <div class="card-desc">How the original 2017 Transformer spawned three distinct model families.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="formula-box">
+        <span class="label">Original Transformer (2017) — Encoder + Decoder</span>
+        │
+        ├── <span class="hl">Encoder only</span>  → BERT (2018), RoBERTa, ELECTRA, ALBERT
+        │    Best for: embeddings, classification, retrieval
+        │
+        ├── <span class="hl2">Decoder only</span>  → GPT-1/2/3/4/5, LLaMA, Claude, Gemini
+        │    Best for: generation, chat, reasoning
+        │    <span class="c">Why it won: scales better, one unified architecture for all tasks</span>
+        │
+        └── <span class="hl3">Encoder + Decoder</span>  → T5, BART, Whisper, MarianMT
+             Best for: translation, summarisation, speech-to-text
+      </div>
+    </div>
+  </div>
+
+  <!-- Key insights summary -->
+  <div class="card" id="key-insights-all">
+    <div class="card-header">
+      <span class="card-number">KI</span>
+      <div>
+        <div class="card-title">All Key Insights — One page summary</div>
+        <div class="card-desc">The most important takeaways from the entire conversation.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="insight"><strong>01 — Dot product:</strong> Measures direction agreement AND magnitude. Higher = more similar, but only relatively. Has no fixed range.</div>
+      <div class="insight insight-blue" style="margin-top:10px;"><strong>02 — Cosine similarity:</strong> Normalises out magnitude. Always between -1 and +1. Preferred for text search and RAG. Use dot product in Transformer attention for speed.</div>
+      <div class="insight insight-green" style="margin-top:10px;"><strong>03 — Embeddings:</strong> Start as random numbers. Meaning emerges from backpropagation on context. 768D dimensions are entangled — no single dimension has a clean meaning.</div>
+      <div class="insight insight-amber" style="margin-top:10px;"><strong>04 — BERT training:</strong> Predicts masked words (classification task). Ground truth is always a word label, never a vector. The vector is a side effect — learned because it helps predict correctly.</div>
+      <div class="insight" style="margin-top:10px;"><strong>05 — Self-attention:</strong> Every token queries every other token via Q·K dot product. Attention weights determine how much of each Value vector to incorporate. Wq, Wk, Wv are the learned parameters (768×768 each).</div>
+      <div class="insight insight-blue" style="margin-top:10px;"><strong>06 — Layer specialisation:</strong> Never configured. Early layers capture syntax, late layers capture semantics. Emergent from depth — each layer builds on the previous.</div>
+      <div class="insight insight-green" style="margin-top:10px;"><strong>07 — Decoder-only:</strong> Still has an embedding table. Still converts text to vectors. "No separate encoder" means no dedicated encoder component — not that embedding is skipped.</div>
+      <div class="insight insight-amber" style="margin-top:10px;"><strong>08 — Modern LLMs:</strong> Moved from dense to MoE. Context windows grew from 512 (BERT) to 1M tokens. Architecture details are largely not disclosed publicly by frontier labs.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Built from our conversation on Vectors, Embeddings, and Transformer Architecture &nbsp;·&nbsp;
+  24 topics &nbsp;·&nbsp; All examples use Apple &amp; Fruit throughout
+</footer>
+
+<script>
+// ─── SEARCH INDEX ───────────────────────────────────────────────
+const searchIndex = [
+  { id:'dot-product-basics',     tab:'tab-foundations',  title:'Dot Product basics',                  keywords:['dot product','similarity','scalar','formula','a dot b','apple fruit'] },
+  { id:'cosine-similarity',      tab:'tab-foundations',  title:'Cosine similarity',                   keywords:['cosine','cos theta','angle','range','normalised','similarity score'] },
+  { id:'magnitude-problem',      tab:'tab-foundations',  title:'Magnitude problem — when dot product misleads', keywords:['magnitude','animal','large vector','bias','mislead','inflate'] },
+  { id:'dot-vs-cosine-usecases', tab:'tab-foundations',  title:'Dot product vs cosine — use cases',  keywords:['use case','recommendation','transformer attention','document','image retrieval','when to use'] },
+  { id:'dot-product-range',      tab:'tab-foundations',  title:'Dot product has no fixed range',      keywords:['range','ranking','softmax','threshold','no fixed','relative'] },
+  { id:'long-document-bias',     tab:'tab-foundations',  title:'Long document bias',                  keywords:['long document','bias','length','word count','accumulate','tf-idf'] },
+  { id:'query-vs-document',      tab:'tab-foundations',  title:'Query vs document vectors',           keywords:['query vector','document vector','same dimension','element wise','averaging','red fruit sentence'] },
+  { id:'embeddings-meaning',     tab:'tab-embeddings',   title:'How embeddings capture meaning',      keywords:['embedding','meaning','context','word2vec','similar words','direction'] },
+  { id:'bert-training',          tab:'tab-embeddings',   title:'BERT training — masked language model', keywords:['bert','mlm','masked','training','backpropagation','predict','classification','ground truth'] },
+  { id:'embedding-table',        tab:'tab-embeddings',   title:'Embedding table — random start',      keywords:['embedding table','random','initialisation','convergence','vocabulary','30000'] },
+  { id:'768-dimensions',         tab:'tab-embeddings',   title:'768 dimensions — what they encode',   keywords:['768','dimensions','emergent','layers','syntax','semantics','probing'] },
+  { id:'contextual-embeddings',  tab:'tab-embeddings',   title:'Contextual embeddings',               keywords:['contextual','same word','apple laptop','apple fruit','word2vec','different vector','bert advantage'] },
+  { id:'rag-pipeline',           tab:'tab-embeddings',   title:'Embedding pipeline — RAG retrieval',  keywords:['rag','retrieval','pipeline','chunk','vector db','cls token','mean pooling','production'] },
+  { id:'self-attention-intuition',tab:'tab-transformer', title:'Self-attention intuition',            keywords:['self attention','animal street','it','bidirectional','full sentence','transformer'] },
+  { id:'qkv-mechanism',          tab:'tab-transformer',  title:'Q K V mechanism',                     keywords:['query','key','value','wq','wk','wv','768x768','library','attention score'] },
+  { id:'backpropagation-bert',   tab:'tab-transformer',  title:'Backpropagation in BERT',             keywords:['backpropagation','adjust','embedding table','transformer weights','parameters','updated','frozen'] },
+  { id:'layer-specialisation',   tab:'tab-transformer',  title:'Layer specialisation — emergent',     keywords:['layer','specialisation','emergent','syntax','semantics','configured','black box','xai'] },
+  { id:'multihead-attention',    tab:'tab-transformer',  title:'Multi-head attention',                keywords:['multi head','8 heads','parallel','concatenate','grammatical','semantic','different perspectives'] },
+  { id:'transformer-diagram',    tab:'tab-architecture', title:'Interactive Transformer architecture diagram', keywords:['diagram','architecture','interactive','visual','encoder decoder','all components','overview'] },
+  { id:'encoder-vs-decoder',     tab:'tab-architecture', title:'Encoder vs decoder',                  keywords:['encoder','decoder','bert','gpt','claude','attention direction','bidirectional','masked'] },
+  { id:'original-transformer',   tab:'tab-architecture', title:'Original Transformer 2017',           keywords:['2017','attention is all you need','translation','cross attention','encoder decoder','french','le ciel'] },
+  { id:'transformer-components', tab:'tab-architecture', title:'Every component explained',           keywords:['components','input embedding','positional encoding','add norm','feed forward','linear','softmax','all'] },
+  { id:'positional-encoding',    tab:'tab-architecture', title:'Positional encoding',                 keywords:['positional','position','word order','sine','cosine','fixed','the sky is blue'] },
+  { id:'decoder-only-embedding', tab:'tab-architecture', title:'Decoder-only — prompt as encoding',  keywords:['decoder only','prompt encoding','embedding table still','misconception','no separate encoder'] },
+  { id:'generation-mechanism',   tab:'tab-architecture', title:'Text generation mechanism',           keywords:['generation','next token','temperature','sampling','top k','greedy','eos','stop','loop'] },
+  { id:'formula-cheatsheet',     tab:'tab-reference',    title:'Formula cheat sheet',                 keywords:['formula','cheat sheet','dot product','cosine','magnitude','softmax','attention score','parameters'] },
+  { id:'apple-fruit-tracker',    tab:'tab-reference',    title:'Apple and Fruit example tracker',     keywords:['apple','fruit','example','running','thread','complete','0.74','0.991','0.947'] },
+  { id:'dot-vs-cosine-full',     tab:'tab-reference',    title:'Dot product vs cosine — full comparison', keywords:['comparison','dot cosine','table','range','magnitude','interpretable','cost'] },
+  { id:'bert-vs-gpt',            tab:'tab-reference',    title:'BERT vs GPT comparison',              keywords:['bert vs gpt','encoder decoder','comparison table','generation','embedding quality','classification'] },
+  { id:'llm-comparison',         tab:'tab-reference',    title:'Modern LLM architecture comparison',  keywords:['llm','gpt-4','gpt-5','gemini 2.5','claude sonnet','llama 4','moe','parameters','context window','1m'] },
+  { id:'transformer-family',     tab:'tab-reference',    title:'Transformer family tree',             keywords:['family tree','t5','bart','whisper','roberta','electra','llama','history','2017'] },
+  { id:'key-insights-all',       tab:'tab-reference',    title:'All key insights summary',            keywords:['summary','key insights','takeaways','all topics','overview'] },
+];
+
+const tabLabels = {
+  'tab-foundations':  'Foundations',
+  'tab-embeddings':   'Embeddings',
+  'tab-transformer':  'Transformer',
+  'tab-architecture': 'Architecture',
+  'tab-reference':    'Quick Reference',
+};
+
+// ─── SEARCH ─────────────────────────────────────────────────────
+const searchBox     = document.getElementById('searchBox');
+const searchResults = document.getElementById('searchResults');
+
+searchBox.addEventListener('input', function() {
+  const term = this.value.toLowerCase().trim();
+  if (term.length < 2) { searchResults.classList.remove('show'); return; }
+
+  const matches = searchIndex.filter(item =>
+    item.title.toLowerCase().includes(term) ||
+    item.keywords.some(k => k.includes(term))
+  );
+
+  if (!matches.length) {
+    searchResults.innerHTML = '<div class="search-no-results">No results for "' + term + '"</div>';
+    searchResults.classList.add('show'); return;
+  }
+
+  searchResults.innerHTML = matches.map(m => `
+    <div class="search-result-item" onclick="navTo('${m.tab}','${m.id}')">
+      <div class="search-result-title">${m.title}</div>
+      <span class="search-result-tab">${tabLabels[m.tab]}</span>
+    </div>
+  `).join('');
+  searchResults.classList.add('show');
+});
+
+document.addEventListener('click', function(e) {
+  if (!searchBox.contains(e.target) && !searchResults.contains(e.target))
+    searchResults.classList.remove('show');
+});
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); searchBox.focus(); }
+  if (e.key === 'Escape') searchResults.classList.remove('show');
+});
+
+function navTo(tabId, elemId) {
+  // switch tab
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  // find matching button
+  document.querySelectorAll('.tab-button').forEach(b => {
+    if (b.textContent.trim() === tabLabels[tabId]) b.classList.add('active');
+  });
+  // scroll
+  setTimeout(() => {
+    const el = document.getElementById(elemId);
+    if (el) {
+      el.scrollIntoView({ behavior:'smooth', block:'start' });
+      el.classList.add('flash-highlight');
+      setTimeout(() => el.classList.remove('flash-highlight'), 2000);
+    }
+  }, 80);
+  searchResults.classList.remove('show');
+  searchBox.value = '';
+}
+
+// ─── TAB SWITCHING ───────────────────────────────────────────────
+function openTab(evt, tabName) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+  evt.currentTarget.classList.add('active');
+}
+
+// ─── COLLAPSIBLE SECTIONS ────────────────────────────────────────
+function toggleCollapse(trigger) {
+  const body = trigger.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  trigger.classList.toggle('open', !isOpen);
+}
+
+// ─── ARCHITECTURE DIAGRAM INTERACTIONS ──────────────────────────
+(function() {
+  const svg      = document.getElementById('arch-svg');
+  if (!svg) return;
+
+  const tipBg    = document.getElementById('tip-bg');
+  const tipFo    = document.getElementById('tip-fo');
+  const tipText  = document.getElementById('tip-text');
+  const TIP_W    = 260;
+  const PAD      = 10;
+
+  function svgPoint(e) {
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  svg.querySelectorAll('.arch-block').forEach(function(block) {
+    const rect       = block.querySelector('rect');
+    const origFill   = rect ? rect.getAttribute('fill') : null;
+    const origStroke = rect ? rect.getAttribute('stroke') : null;
+    const origSW     = rect ? rect.getAttribute('stroke-width') : null;
+
+    block.style.cursor = 'pointer';
+
+    function showTip(e) {
+      const msg = block.getAttribute('data-tip') || '';
+      tipText.textContent = msg;
+      const lines = Math.ceil(msg.length / 40);
+      const h = Math.max(80, lines * 19 + 28);
+
+      const pt = svgPoint(e);
+      const vb = svg.viewBox.baseVal;
+      let tx = pt.x + PAD;
+      let ty = pt.y - h / 2;
+      if (tx + TIP_W > vb.width - 10) tx = pt.x - TIP_W - PAD;
+      if (ty < 10) ty = 10;
+      if (ty + h > vb.height - 10) ty = vb.height - h - 10;
+
+      tipBg.setAttribute('x', tx);    tipBg.setAttribute('y', ty);
+      tipBg.setAttribute('width', TIP_W); tipBg.setAttribute('height', h);
+      tipFo.setAttribute('x', tx);    tipFo.setAttribute('y', ty);
+      tipFo.setAttribute('width', TIP_W); tipFo.setAttribute('height', h);
+    }
+
+    block.addEventListener('mouseenter', function(e) {
+      if (rect) {
+        rect.setAttribute('fill', '#ffd700');
+        rect.setAttribute('stroke', '#b8860b');
+        rect.setAttribute('stroke-width', '2.5');
+        rect.setAttribute('filter', 'url(#glow)');
+      }
+      showTip(e);
+    });
+
+    block.addEventListener('mousemove', showTip);
+
+    block.addEventListener('mouseleave', function() {
+      if (rect) {
+        rect.setAttribute('fill', origFill);
+        rect.setAttribute('stroke', origStroke);
+        rect.setAttribute('stroke-width', origSW);
+        rect.removeAttribute('filter');
+      }
+      tipBg.setAttribute('width', 0); tipBg.setAttribute('height', 0);
+      tipFo.setAttribute('width', 0); tipFo.setAttribute('height', 0);
+      tipText.textContent = '';
+    });
+
+    block.addEventListener('click', function() {
+      const targetId = block.getAttribute('data-id');
+      if (!targetId) return;
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-architecture').classList.add('active');
+      document.querySelectorAll('.tab-button').forEach(b => {
+        if (b.textContent.trim() === 'Architecture') b.classList.add('active');
+      });
+      setTimeout(function() {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.classList.add('flash-highlight');
+          setTimeout(() => el.classList.remove('flash-highlight'), 2000);
+        }
+      }, 80);
+    });
+  });
+})();
+
+// ─── READING PROGRESS BAR ────────────────────────────────────────
+window.addEventListener('scroll', function() {
+  const doc  = document.documentElement;
+  const scrolled = doc.scrollTop;
+  const total = doc.scrollHeight - doc.clientHeight;
+  const pct = total > 0 ? (scrolled / total) * 100 : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+</script>
+</body>
+</html>
